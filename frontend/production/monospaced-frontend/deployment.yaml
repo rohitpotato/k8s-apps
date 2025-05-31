@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: monospaced-frontend
+  namespace: monospaced
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: monospaced-frontend
+  template:
+    metadata:
+      labels:
+        app: monospaced-frontend
+    spec:
+      containers:
+        - name: monospaced-frontend
+          image: ghcr.io/rohitpotato/monospaced-frontend:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3000
+          readinessProbe:
+            httpGet:
+              path: /api/_health
+              port: 3000
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /api/_health
+              port: 3000
+            initialDelaySeconds: 10
+            periodSeconds: 10
