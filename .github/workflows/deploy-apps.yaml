@@ -49,6 +49,7 @@ jobs:
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
+          passphrase: ${{ secrets.PASSPHRASE }}
           key: ${{ secrets.SSH_KEY }}
           script_stop: true # Stop on first error
           envs: GITHUB_ACTOR,GITHUB_TOKEN
