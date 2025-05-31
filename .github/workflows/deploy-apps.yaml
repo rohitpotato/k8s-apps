@@ -1,0 +1,130 @@
+name: Deploy Apps
+on:
+  push:
+    branches: [main]
+
+env:
+  REGISTRY: ghcr.io
+
+jobs:
+  deploy-apps:
+    name: Deploy Apps
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Login into registry
+        uses: docker/login-action@v3.3.0
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Validate Kubernetes manifests
+        run: |
+          # Install kubeval for manifest validation
+          curl -L https://github.com/instrumenta/kubeval/releases/latest/download/kubeval-linux-amd64.tar.gz | tar xz
+          sudo mv kubeval /usr/local/bin
+
+          # Find all directories containing .yaml files (Kubernetes manifests)
+          find . -name "*.yaml" -o -name "*.yml" | head -1 > /dev/null || {
+            echo "No YAML manifests found"
+            exit 1
+          }
+
+          # Validate all manifests
+          find . -name "*.yaml" -o -name "*.yml" | xargs kubeval
+
+      - name: Deploy to Kubernetes
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          script_stop: true # Stop on first error
+          envs: GITHUB_ACTOR,GITHUB_TOKEN
+          script: |
+            set -e  # Exit on any error
+
+            # Navigate to deployment directory
+            cd /var/www/monospaced-stack
+
+            # Backup current deployment for rollback
+            kubectl get all -n monospaced -o yaml > backup-$(date +%Y%m%d-%H%M%S).yaml || true
+
+            # Sync with the exact commit that triggered this workflow
+            git fetch origin
+            git checkout ${{ github.sha }}
+
+            # Login to container registry using environment variables
+            echo "$GITHUB_TOKEN" | docker login ghcr.io -u "$GITHUB_ACTOR" --password-stdin
+
+            # Check if cert-manager is already installed
+            if ! kubectl get namespace cert-manager &>/dev/null; then
+              echo "Installing cert-manager..."
+              
+              # Install cert-manager
+              kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.13.2/cert-manager.yaml
+              
+              # Wait for cert-manager to be ready
+              echo "Waiting for cert-manager to be ready..."
+              kubectl wait --for=condition=available --timeout=300s deployment/cert-manager -n cert-manager
+              kubectl wait --for=condition=available --timeout=300s deployment/cert-manager-cainjector -n cert-manager
+              kubectl wait --for=condition=available --timeout=300s deployment/cert-manager-webhook -n cert-manager
+              
+              echo "cert-manager installed successfully"
+            else
+              echo "cert-manager already exists, skipping installation"
+            fi
+
+            # Dynamically find all directories containing Kubernetes manifests
+            MANIFEST_DIRS=$(find . -name "*.yaml" -o -name "*.yml" | xargs dirname | sort -u | grep -v '^\.$' || true)
+
+            if [ -z "$MANIFEST_DIRS" ]; then
+              echo "No Kubernetes manifest directories found"
+              exit 1
+            fi
+
+            echo "Found manifest directories:"
+            echo "$MANIFEST_DIRS"
+
+            # Apply manifests from each directory
+            for dir in $MANIFEST_DIRS; do
+              echo "Applying manifests from: $dir"
+              kubectl apply -f "$dir/" --recursive
+            done
+
+            # Dynamically find all deployments in the monospaced namespace and wait for them
+            echo "Waiting for deployments to be ready..."
+            DEPLOYMENTS=$(kubectl get deployments -n monospaced -o name 2>/dev/null || true)
+
+            if [ -n "$DEPLOYMENTS" ]; then
+              for deployment in $DEPLOYMENTS; do
+                echo "Waiting for $deployment to be ready..."
+                kubectl wait --for=condition=available --timeout=300s "$deployment" -n monospaced || {
+                  echo "$deployment failed to become ready"
+                  exit 1
+                }
+              done
+            else
+              echo "No deployments found in monospaced namespace"
+            fi
+
+            # Verify pods are running
+            kubectl get pods -n monospaced
+
+            # Basic health check
+            kubectl get services -n monospaced
+
+            echo "Deployment completed successfully!"
+
+      - name: Notify on success
+        if: success()
+        run: echo "✅ Deployment completed successfully"
+
+      - name: Notify on failure
+        if: failure()
+        run: |
+          echo "❌ Deployment failed"
+          exit 1

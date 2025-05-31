@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: monospaced-backend
+  namespace: monospaced
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: monospaced-backend
+  template:
+    metadata:
+      labels:
+        app: monospaced-backend
+    spec:
+      containers:
+        - name: monospaced-backend
+          image: ghcr.io/rohitpotato/monospaced-backend:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3001
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 3001
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 3001
