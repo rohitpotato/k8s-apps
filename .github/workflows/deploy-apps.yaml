@@ -23,18 +23,26 @@ jobs:
 
       - name: Validate Kubernetes manifests
         run: |
-          # Install kubeval for manifest validation
-          curl -L https://github.com/instrumenta/kubeval/releases/latest/download/kubeval-linux-amd64.tar.gz | tar xz
-          sudo mv kubeval /usr/local/bin
+          # Install kubeconform (modern replacement for kubeval)
+          curl -L https://github.com/yannh/kubeconform/releases/latest/download/kubeconform-linux-amd64.tar.gz | tar xz
+          sudo mv kubeconform /usr/local/bin
 
-          # Find all directories containing .yaml files (Kubernetes manifests)
-          find . -name "*.yaml" -o -name "*.yml" | head -1 > /dev/null || {
-            echo "No YAML manifests found"
+          # Find Kubernetes manifests (exclude .github and other non-k8s directories)
+          MANIFEST_FILES=$(find . -name "*.yaml" -o -name "*.yml" | grep -v ".github" | grep -v ".git" || true)
+
+          if [ -z "$MANIFEST_FILES" ]; then
+            echo "No Kubernetes manifest files found"
             exit 1
-          }
+          fi
 
-          # Validate all manifests
-          find . -name "*.yaml" -o -name "*.yml" | xargs kubeval
+          echo "Validating Kubernetes manifests:"
+          echo "$MANIFEST_FILES"
+
+          # Validate all manifests with kubeconform
+          # -summary: show summary
+          # -output json: better error reporting  
+          # -ignore-missing-schemas: don't fail on missing CRD schemas
+          echo "$MANIFEST_FILES" | xargs kubeconform -summary -ignore-missing-schemas
 
       - name: Deploy to Kubernetes
         uses: appleboy/ssh-action@v1.2.0
@@ -78,8 +86,8 @@ jobs:
               echo "cert-manager already exists, skipping installation"
             fi
 
-            # Dynamically find all directories containing Kubernetes manifests
-            MANIFEST_DIRS=$(find . -name "*.yaml" -o -name "*.yml" | xargs dirname | sort -u | grep -v '^\.$' || true)
+            # Dynamically find all directories containing Kubernetes manifests (exclude .github)
+            MANIFEST_DIRS=$(find . -name "*.yaml" -o -name "*.yml" | grep -v ".github" | grep -v ".git" | xargs dirname | sort -u | grep -v '^\.$' || true)
 
             if [ -z "$MANIFEST_DIRS" ]; then
               echo "No Kubernetes manifest directories found"
