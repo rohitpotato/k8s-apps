@@ -8,6 +8,6 @@ spec:
     app: monospaced-backend
   ports:
     - name: http
-      port: 3001
-      targetPort: 3001
+      port: 5001
+      targetPort: 5001
   type: ClusterIP
