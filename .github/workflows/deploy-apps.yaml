@@ -56,18 +56,14 @@ jobs:
           script: |
             set -e  # Exit on any error
 
-            # Navigate to deployment directory
-            cd /var/www/monospaced-stack
+            # Create backup directory if it doesn't exist
+            mkdir -p ~/k8s-backups
+
+            # Create namespace if it doesn't exist
+            kubectl create namespace monospaced --dry-run=client -o yaml | kubectl apply -f -
 
             # Backup current deployment for rollback
-            kubectl get all -n monospaced -o yaml > backup-$(date +%Y%m%d-%H%M%S).yaml || true
-
-            # Sync with the exact commit that triggered this workflow
-            git fetch origin
-            git checkout ${{ github.sha }}
-
-            # Login to container registry using environment variables
-            echo "$GITHUB_TOKEN" | docker login ghcr.io -u "$GITHUB_ACTOR" --password-stdin
+            kubectl get all -n monospaced -o yaml > ~/k8s-backups/backup-$(date +%Y%m%d-%H%M%S).yaml || true
 
             # Check if cert-manager is already installed
             if ! kubectl get namespace cert-manager &>/dev/null; then
@@ -87,6 +83,13 @@ jobs:
               echo "cert-manager already exists, skipping installation"
             fi
 
+            # Create temporary directory for manifests
+            TEMP_DIR=$(mktemp -d)
+            cd "$TEMP_DIR"
+
+            # Clone the repository using the branch (more reliable than SHA)
+            git clone --depth 1 --branch main https://github.com/${{ github.repository }}.git .
+
             # Dynamically find all directories containing Kubernetes manifests (exclude .github)
             MANIFEST_DIRS=$(find . -name "*.yaml" -o -name "*.yml" | grep -v ".github" | grep -v ".git" | xargs dirname | sort -u | grep -v '^\.$' || true)
 
@@ -103,6 +106,10 @@ jobs:
               echo "Applying manifests from: $dir"
               kubectl apply -f "$dir/" --recursive
             done
+
+            # Clean up temporary directory
+            cd ~
+            rm -rf "$TEMP_DIR"
 
             # Dynamically find all deployments in the monospaced namespace and wait for them
             echo "Waiting for deployments to be ready..."
