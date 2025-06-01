@@ -56,84 +56,115 @@ jobs:
           script: |
             set -e  # Exit on any error
 
+            echo "🚀 Starting deployment process..."
+
             # Create backup directory if it doesn't exist
+            echo "📁 Creating backup directory..."
             mkdir -p ~/k8s-backups
+            echo "✅ Backup directory created"
 
             # Create namespace if it doesn't exist
+            echo "📦 Creating namespace monospaced..."
             kubectl create namespace monospaced --dry-run=client -o yaml | kubectl apply -f -
+            echo "✅ Namespace ready"
 
-            # Backup current deployment for rollback
-            kubectl get all -n monospaced -o yaml > ~/k8s-backups/backup-$(date +%Y%m%d-%H%M%S).yaml || true
+            # Backup current deployment for rollback (only if there are resources)
+            echo "💾 Creating backup of current deployment..."
+            if kubectl get all -n monospaced --no-headers 2>/dev/null | grep -q .; then
+              kubectl get all -n monospaced -o yaml > ~/k8s-backups/backup-$(date +%Y%m%d-%H%M%S).yaml
+              echo "✅ Backup created"
+            else
+              echo "ℹ️  No existing resources to backup"
+            fi
 
             # Check if cert-manager is already installed
+            echo "🔐 Checking cert-manager installation..."
             if ! kubectl get namespace cert-manager &>/dev/null; then
-              echo "Installing cert-manager..."
+              echo "📦 Installing cert-manager..."
               
               # Install cert-manager
               kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.13.2/cert-manager.yaml
               
               # Wait for cert-manager to be ready
-              echo "Waiting for cert-manager to be ready..."
+              echo "⏳ Waiting for cert-manager to be ready..."
               kubectl wait --for=condition=available --timeout=300s deployment/cert-manager -n cert-manager
               kubectl wait --for=condition=available --timeout=300s deployment/cert-manager-cainjector -n cert-manager
               kubectl wait --for=condition=available --timeout=300s deployment/cert-manager-webhook -n cert-manager
               
-              echo "cert-manager installed successfully"
+              echo "✅ cert-manager installed successfully"
             else
-              echo "cert-manager already exists, skipping installation"
+              echo "✅ cert-manager already exists, skipping installation"
             fi
 
             # Create temporary directory for manifests
+            echo "📂 Creating temporary directory for manifests..."
             TEMP_DIR=$(mktemp -d)
+            echo "📍 Temporary directory: $TEMP_DIR"
             cd "$TEMP_DIR"
 
             # Clone the repository using the branch (more reliable than SHA)
-            git clone --depth 1 --branch main https://github.com/${{ github.repository }}.git .
+            echo "📥 Cloning repository..."
+            git clone --depth 1 --branch main https://github.com/${{ github.repository }}.git . || {
+              echo "❌ Failed to clone repository"
+              exit 1
+            }
+            echo "✅ Repository cloned successfully"
 
             # Dynamically find all directories containing Kubernetes manifests (exclude .github)
+            echo "🔍 Finding Kubernetes manifest directories..."
             MANIFEST_DIRS=$(find . -name "*.yaml" -o -name "*.yml" | grep -v ".github" | grep -v ".git" | xargs dirname | sort -u | grep -v '^\.$' || true)
 
             if [ -z "$MANIFEST_DIRS" ]; then
-              echo "No Kubernetes manifest directories found"
+              echo "❌ No Kubernetes manifest directories found"
               exit 1
             fi
 
-            echo "Found manifest directories:"
+            echo "📋 Found manifest directories:"
             echo "$MANIFEST_DIRS"
 
             # Apply manifests from each directory
+            echo "🚀 Applying manifests..."
             for dir in $MANIFEST_DIRS; do
-              echo "Applying manifests from: $dir"
-              kubectl apply -f "$dir/" --recursive
+              echo "📁 Applying manifests from: $dir"
+              kubectl apply -f "$dir/" --recursive || {
+                echo "❌ Failed to apply manifests from $dir"
+                exit 1
+              }
+              echo "✅ Applied manifests from $dir"
             done
 
             # Clean up temporary directory
+            echo "🧹 Cleaning up temporary directory..."
             cd ~
             rm -rf "$TEMP_DIR"
+            echo "✅ Cleanup completed"
 
             # Dynamically find all deployments in the monospaced namespace and wait for them
-            echo "Waiting for deployments to be ready..."
+            echo "⏳ Waiting for deployments to be ready..."
             DEPLOYMENTS=$(kubectl get deployments -n monospaced -o name 2>/dev/null || true)
 
             if [ -n "$DEPLOYMENTS" ]; then
               for deployment in $DEPLOYMENTS; do
-                echo "Waiting for $deployment to be ready..."
+                echo "⏳ Waiting for $deployment to be ready..."
                 kubectl wait --for=condition=available --timeout=300s "$deployment" -n monospaced || {
-                  echo "$deployment failed to become ready"
+                  echo "❌ $deployment failed to become ready"
                   exit 1
                 }
+                echo "✅ $deployment is ready"
               done
             else
-              echo "No deployments found in monospaced namespace"
+              echo "ℹ️  No deployments found in monospaced namespace"
             fi
 
             # Verify pods are running
+            echo "🔍 Verifying pods..."
             kubectl get pods -n monospaced
 
             # Basic health check
+            echo "🔍 Checking services..."
             kubectl get services -n monospaced
 
-            echo "Deployment completed successfully!"
+            echo "🎉 Deployment completed successfully!"
 
       - name: Notify on success
         if: success()
