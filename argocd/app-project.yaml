@@ -12,4 +12,5 @@ spec:
     - namespace: monospaced
       server: https://kubernetes.default.svc
   clusterResourceWhitelist:
-    - group: '*'
+    - group: '*'      # All API groups
+      kind: '*'       # All kinds
