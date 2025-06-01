@@ -58,6 +58,34 @@ jobs:
 
             echo "🚀 Starting deployment process..."
 
+            # Setup kubeconfig for k3s FIRST
+            echo "🔧 Setting up kubeconfig..."
+            mkdir -p ~/.kube
+
+            # Copy k3s config to user directory
+            if [ -f /etc/rancher/k3s/k3s.yaml ]; then
+              echo "📋 Copying k3s config to ~/.kube/config"
+              cp /etc/rancher/k3s/k3s.yaml ~/.kube/config
+              chmod 600 ~/.kube/config
+              echo "✅ kubeconfig copied and permissions set"
+            else
+              echo "❌ k3s config not found at /etc/rancher/k3s/k3s.yaml"
+              exit 1
+            fi
+
+            # Set kubeconfig environment variable
+            export KUBECONFIG=~/.kube/config
+            echo "✅ KUBECONFIG set to ~/.kube/config"
+
+            # Test kubectl connection
+            echo "🔍 Testing kubectl connection..."
+            if kubectl cluster-info >/dev/null 2>&1; then
+              echo "✅ kubectl can connect to cluster"
+            else
+              echo "❌ kubectl cannot connect to cluster"
+              exit 1
+            fi
+
             # Create backup directory if it doesn't exist
             echo "📁 Creating backup directory..."
             mkdir -p ~/k8s-backups
