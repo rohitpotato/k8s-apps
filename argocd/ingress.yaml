@@ -1,25 +1,25 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: monospaced-backend-ingress
-  namespace: monospaced
+  name: argocd-ingress
+  namespace: argocd
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-staging
     traefik.ingress.kubernetes.io/router.middlewares: default-redirect-https@kubernetescrd
 spec:
   ingressClassName: traefik
   rules:
-    - host: api.rohitpotato.xyz
+    - host: argocd.rohitpotato.xyz
       http:
         paths:
           - path: /
             pathType: Prefix
             backend:
               service:
-                name: monospaced-backend
+                name: argocd-server
                 port:
-                  number: 5001
+                  number: 80
   tls:
     - hosts:
-        - api.rohitpotato.xyz
-      secretName: monospaced-backend-tls
+        - argocd.rohitpotato.xyz
+      secretName: argocd-tls
