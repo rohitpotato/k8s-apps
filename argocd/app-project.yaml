@@ -1,0 +1,15 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: k8s-apps-project
+  namespace: argocd
+spec:
+  sourceRepos:
+    - https://github.com/rohitpotato/k8s-apps.git
+  destinations:
+    - namespace: k8s-apps
+      server: https://kubernetes.default.svc
+    - namespace: monospaced
+      server: https://kubernetes.default.svc
+  clusterResourceWhitelist:
+    - group: '*'
