@@ -7,8 +7,6 @@ spec:
   sourceRepos:
     - https://github.com/rohitpotato/k8s-apps.git
   destinations:
-    - namespace: k8s-apps
-      server: https://kubernetes.default.svc
     - namespace: monospaced
       server: https://kubernetes.default.svc
   clusterResourceWhitelist:

@@ -7,7 +7,7 @@ spec:
   project: k8s-apps-project
   source:
     repoURL: https://github.com/rohitpotato/k8s-apps.git
-    targetRevision: main
+    targetRevision: HEAD
     path: backend/production/monospaced-backend
   destination:
     server: https://kubernetes.default.svc
