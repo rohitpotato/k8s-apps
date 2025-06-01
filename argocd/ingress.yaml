@@ -6,7 +6,7 @@ metadata:
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-staging
     traefik.ingress.kubernetes.io/router.middlewares: default-redirect-https@kubernetescrd
-    traefik.ingress.kubernetes.io/service.serversscheme: https
+    # traefik.ingress.kubernetes.io/service.serversscheme: https
 spec:
   ingressClassName: traefik
   rules:
@@ -19,7 +19,7 @@ spec:
               service:
                 name: argocd-server
                 port:
-                  name: https
+                  name: http
   tls:
     - hosts:
         - argocd.rohitpotato.xyz
