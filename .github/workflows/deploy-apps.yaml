@@ -143,9 +143,24 @@ jobs:
 
             # Create temporary directory for manifests
             echo "📂 Creating temporary directory for manifests..."
-            TEMP_DIR=$(mktemp -d)
+
+            # Debug mktemp command
+            echo "🔍 Running: mktemp -d"
+            TEMP_DIR=$(mktemp -d) || {
+              echo "❌ Failed to create temporary directory with mktemp -d"
+              exit 1
+            }
+            echo "✅ Temporary directory created successfully"
             echo "📍 Temporary directory: $TEMP_DIR"
-            cd "$TEMP_DIR"
+
+            # Debug cd command
+            echo "🔍 Changing to temporary directory: $TEMP_DIR"
+            cd "$TEMP_DIR" || {
+              echo "❌ Failed to change to temporary directory: $TEMP_DIR"
+              exit 1
+            }
+            echo "✅ Successfully changed to temporary directory"
+            echo "📍 Current working directory: $(pwd)"
 
             # Clone the repository using the branch (more reliable than SHA)
             echo "📥 Cloning repository..."
