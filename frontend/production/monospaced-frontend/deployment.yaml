@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: monospaced-frontend
-          image: ghcr.io/rohitpotato/monospaced-frontend:latest
+          image: ghcr.io/rohitpotato/monospaced-stack/frontend:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 3000
