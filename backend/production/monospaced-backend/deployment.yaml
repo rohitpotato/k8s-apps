@@ -17,15 +17,18 @@ spec:
         - name: monospaced-backend
           image: ghcr.io/rohitpotato/monospaced-stack/backend:latest
           imagePullPolicy: Always
+          envFrom:
+            - configMapRef:
+                name: monospaced-backend-config
           ports:
-            - containerPort: 3001
+            - containerPort: 5001
           readinessProbe:
             httpGet:
               path: /health
-              port: 3001
+              port: 5001
             initialDelaySeconds: 10
             periodSeconds: 10
           livenessProbe:
             httpGet:
               path: /health
-              port: 3001
+              port: 5001

@@ -107,11 +107,26 @@ jobs:
 
             # Check if cert-manager is already installed
             echo "🔐 Checking cert-manager installation..."
-            if ! kubectl get namespace cert-manager &>/dev/null; then
+            echo "🔍 About to run: kubectl get namespace cert-manager"
+
+            # Run the command and capture both output and exit code
+            if kubectl get namespace cert-manager 2>&1; then
+              CERT_MANAGER_EXISTS=true
+              echo "✅ cert-manager namespace found"
+            else
+              CERT_MANAGER_EXISTS=false
+              echo "ℹ️  cert-manager namespace not found (this is expected for first install)"
+            fi
+
+            echo "🔍 Cert-manager exists: $CERT_MANAGER_EXISTS"
+
+            if [ "$CERT_MANAGER_EXISTS" = "false" ]; then
               echo "📦 Installing cert-manager..."
               
               # Install cert-manager
+              echo "📥 Downloading and applying cert-manager manifests..."
               kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.13.2/cert-manager.yaml
+              echo "✅ cert-manager manifests applied"
               
               # Wait for cert-manager to be ready
               echo "⏳ Waiting for cert-manager to be ready..."
@@ -123,6 +138,8 @@ jobs:
             else
               echo "✅ cert-manager already exists, skipping installation"
             fi
+
+            echo "🎯 cert-manager check completed, proceeding to manifests..."
 
             # Create temporary directory for manifests
             echo "📂 Creating temporary directory for manifests..."
