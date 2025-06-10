@@ -10,6 +10,8 @@ spec:
   destinations:
     - namespace: monospaced
       server: https://kubernetes.default.svc
+    - namespace: vault
+      server: https://kubernetes.default.svc
   clusterResourceWhitelist:
     - group: '*'      # All API groups
       kind: '*'       # All kinds
