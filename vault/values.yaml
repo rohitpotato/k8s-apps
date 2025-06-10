@@ -8,41 +8,24 @@ server:
       
       listener "tcp" {
         address     = "0.0.0.0:8200"
-        tls_cert_file = "/vault/userconfig/vault-tls/tls.crt"
-        tls_key_file  = "/vault/userconfig/vault-tls/tls.key"
-      }
-      
-      listener "tcp" {
-        address     = "0.0.0.0:8201"
         tls_disable = 1
-        cluster_address = "0.0.0.0:8201"
       }
       
       storage "raft" {
         path = "/vault/data"
         
         retry_join {
-          leader_api_addr = "http://vault-0.vault-internal:8201"
+          leader_api_addr = "http://vault-0.vault-internal:8200"
         }
         retry_join {
-          leader_api_addr = "http://vault-1.vault-internal:8201"
+          leader_api_addr = "http://vault-1.vault-internal:8200"
         }
         retry_join {
-          leader_api_addr = "http://vault-2.vault-internal:8201"
+          leader_api_addr = "http://vault-2.vault-internal:8200"
         }
       }
       
       service_registration "kubernetes" {}
-
-  volumes:
-    - name: vault-tls
-      secret:
-        secretName: vault-tls
-
-  volumeMounts:
-    - name: vault-tls
-      mountPath: /vault/userconfig/vault-tls
-      readOnly: true
 
 ui:
   enabled: true
