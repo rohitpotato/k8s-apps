@@ -1,0 +1,26 @@
+server:
+  ha:
+    enabled: true
+    raft:
+      enabled: true
+
+  tls:
+    enabled: true
+    certFile: /vault/userconfig/vault-tls/tls.crt
+    keyFile: /vault/userconfig/vault-tls/tls.key
+
+  extraVolumes:
+    - name: vault-tls
+      secret:
+        secretName: vault-tls
+
+  extraVolumeMounts:
+    - name: vault-tls
+      mountPath: /vault/userconfig/vault-tls
+      readOnly: true
+
+ui:
+  enabled: true
+
+injector:
+  enabled: true
