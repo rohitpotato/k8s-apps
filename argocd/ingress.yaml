@@ -4,7 +4,7 @@ metadata:
   name: argocd-ingress
   namespace: argocd
   annotations:
-    cert-manager.io/cluster-issuer: letsencrypt-staging
+    cert-manager.io/cluster-issuer: letsencrypt-production
     traefik.ingress.kubernetes.io/router.middlewares: default-redirect-https@kubernetescrd
     # traefik.ingress.kubernetes.io/service.serversscheme: https
 spec:
