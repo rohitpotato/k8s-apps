@@ -16,7 +16,7 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: vault-active  # Points to active vault pod
+                name: vault  # Correct service name for standalone mode
                 port:
                   number: 8200
   tls:
