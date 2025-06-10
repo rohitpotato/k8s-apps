@@ -5,7 +5,7 @@ metadata:
 spec:
   acme:
     email: rohit.mmm1996@gmail.com
-    server: https://acme-production-v02.api.letsencrypt.org/directory
+    server: https://acme-v02.api.letsencrypt.org/directory
     privateKeySecretRef:
       name: letsencrypt-production
     solvers:
