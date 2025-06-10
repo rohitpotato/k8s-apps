@@ -3,6 +3,36 @@ server:
     enabled: true
     raft:
       enabled: true
+    config: |
+      ui = true
+      
+      listener "tcp" {
+        address     = "0.0.0.0:8200"
+        tls_cert_file = "/vault/userconfig/vault-tls/tls.crt"
+        tls_key_file  = "/vault/userconfig/vault-tls/tls.key"
+      }
+      
+      listener "tcp" {
+        address     = "0.0.0.0:8201"
+        tls_disable = 1
+        cluster_address = "0.0.0.0:8201"
+      }
+      
+      storage "raft" {
+        path = "/vault/data"
+        
+        retry_join {
+          leader_api_addr = "http://vault-0.vault-internal:8201"
+        }
+        retry_join {
+          leader_api_addr = "http://vault-1.vault-internal:8201"
+        }
+        retry_join {
+          leader_api_addr = "http://vault-2.vault-internal:8201"
+        }
+      }
+      
+      service_registration "kubernetes" {}
 
   volumes:
     - name: vault-tls
