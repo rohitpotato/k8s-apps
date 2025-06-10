@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: vault-ingress
+  namespace: vault
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-production
+    traefik.ingress.kubernetes.io/router.middlewares: default-redirect-https@kubernetescrd
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: vault.rohitpotato.xyz
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: vault-active  # Points to active vault pod
+                port:
+                  number: 8200
+  tls:
+    - hosts:
+        - vault.rohitpotato.xyz
+      secretName: vault-ingress-tls 
