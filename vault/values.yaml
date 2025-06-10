@@ -4,17 +4,12 @@ server:
     raft:
       enabled: true
 
-  tls:
-    enabled: true
-    certFile: /vault/userconfig/vault-tls/tls.crt
-    keyFile: /vault/userconfig/vault-tls/tls.key
-
-  extraVolumes:
+  volumes:
     - name: vault-tls
       secret:
         secretName: vault-tls
 
-  extraVolumeMounts:
+  volumeMounts:
     - name: vault-tls
       mountPath: /vault/userconfig/vault-tls
       readOnly: true
