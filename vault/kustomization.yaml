@@ -1,0 +1,9 @@
+resources:
+  - ingress.yaml
+
+helmCharts:
+  - name: vault
+    repo: https://helm.releases.hashicorp.com
+    version: 0.28.1
+    releaseName: vault
+    valuesFile: values.yaml
