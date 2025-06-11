@@ -5,12 +5,16 @@ metadata:
   namespace: argocd
 spec:
   project: k8s-apps-project
-  source:
-    repoURL: https://github.com/rohitpotato/k8s-apps.git
-    targetRevision: main
-    path: vault
-    kustomize:
-      buildOptions: "--enable-helm"
+  sources:
+    - repoURL: https://helm.releases.hashicorp.com
+      targetRevision: 0.28.1
+      chart: vault
+      helm:
+        valueFiles:
+          - $values/vault/values.yaml
+    - repoURL: https://github.com/rohitpotato/k8s-apps.git
+      targetRevision: main
+      ref: values
   destination:
     server: https://kubernetes.default.svc
     namespace: vault
