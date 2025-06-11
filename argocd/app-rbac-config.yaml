@@ -6,4 +6,4 @@ metadata:
 data:
   policy.csv: |
     p, role:super-admin, *, *, *, allow
-    g, authenticated, role:super-admin
+    g, admin, role:super-admin
