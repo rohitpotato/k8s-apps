@@ -1,7 +1,7 @@
 kind: Application
 metadata:
   name: kube-prometheus-stack
-  namespace: monitoring
+  namespace: argocd
 spec:
   sources:
   - repoURL: https://prometheus-community.github.io/helm-charts
