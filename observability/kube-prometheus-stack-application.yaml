@@ -3,6 +3,7 @@ metadata:
   name: kube-prometheus-stack
   namespace: argocd
 spec:
+  project: k8s-apps-project
   sources:
   - repoURL: https://prometheus-community.github.io/helm-charts
     targetRevision: 75.6.1
