@@ -1,0 +1,25 @@
+kind: Application
+metadata:
+  name: kube-prometheus-stack
+  namespace: monitoring
+spec:
+  sources:
+  - repoURL: https://prometheus-community.github.io/helm-charts
+    targetRevision: 75.6.1
+    path: kube-prometheus-stack
+    helm:
+      releaseName: kube-prometheus-stack
+      valueFiles:
+      - $values/observability/values.yaml
+  - repoURL: https://github.com/rohitpotato/k8s-apps.git
+    targetRevision: main
+    ref: values
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: monitoring
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+    syncOptions:
+      - CreateNamespace=true
