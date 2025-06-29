@@ -1,5 +1,5 @@
-nodeSelector:
-  nodeRole: worker
+# nodeSelector:
+#   nodeRole: worker
 
 grafana:
   enabled: true
@@ -7,11 +7,30 @@ grafana:
     enabled: true
     annotations:
       cert-manager.io/cluster-issuer: letsencrypt-production
-      traefik.ingress.kubernetes.io/router.middlewares: default-redirect-https@kubernetescrd
+      kubernetes.io/ingress.class: traefik
     hosts:
-    - grafana.rohitpotato.xyz
-    path: /
+    - host: grafana.rohitpotato.xyz
+      paths:
+        - path: /
+          pathType: Prefix
     tls:
-      - hosts:
-        - grafana.rohitpotato.xyz
-        secretName: grafana-tls
+    - secretName: grafana-tls
+      hosts:
+      - grafana.rohitpotato.xyz
+  persistence:
+    enabled: true
+    type: sts
+    storageClassName: "storageClassName"
+    accessModes:
+      - ReadWriteOnce
+    size: 20Gi
+    finalizers:
+      - kubernetes.io/pvc-protection
+  grafana.ini:
+    security:
+      cookie_secure: false
+    server:
+      domain: grafana.rohitpotato.xyz
+      protocol: https
+      root_url: "%(protocol)s://%(domain)"
+      serve_from_sub_path: true
