@@ -1,2 +1,17 @@
 nodeSelector:
   nodeRole: worker
+
+grafana:
+  enabled: true
+  ingress:
+    enabled: true
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt-production
+      traefik.ingress.kubernetes.io/router.middlewares: default-redirect-https@kubernetescrd
+    hosts:
+    - grafana.rohitpotato.xyz
+    path: /
+    tls:
+      - hosts:
+        - grafana.rohitpotato.xyz
+        secretName: grafana-tls
