@@ -9,10 +9,10 @@ grafana:
       cert-manager.io/cluster-issuer: letsencrypt-production
       kubernetes.io/ingress.class: traefik
     hosts:
-    - host: grafana.rohitpotato.xyz
-      paths:
-        - path: /
-          pathType: Prefix
+      - grafana.rohitpotato.xyz
+    paths:
+      - /
+    pathType: Prefix
     tls:
     - secretName: grafana-tls
       hosts:
@@ -32,5 +32,5 @@ grafana:
     server:
       domain: grafana.rohitpotato.xyz
       protocol: https
-      root_url: "%(protocol)s://%(domain)"
+      root_url: "%(protocol)s://%(domain)s"
       serve_from_sub_path: true
