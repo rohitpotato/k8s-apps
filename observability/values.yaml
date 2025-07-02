@@ -1,5 +1,5 @@
-# nodeSelector:
-#   nodeRole: worker
+nodeSelector:
+  nodeRole: worker
 
 grafana:
   enabled: true
