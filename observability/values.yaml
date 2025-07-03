@@ -17,11 +17,11 @@ grafana:
     - secretName: grafana-tls
       hosts:
       - grafana.rohitpotato.xyz
-  grafana.ini:
-    security:
-      cookie_secure: false
-    server:
-      domain: grafana.rohitpotato.xyz
-      protocol: https
-      root_url: "%(protocol)s://%(domain)s"
-      serve_from_sub_path: true
+  # grafana.ini:
+  #   security:
+  #     cookie_secure: false
+  #   server:
+  #     domain: grafana.rohitpotato.xyz
+  #     protocol: https
+  #     root_url: "%(protocol)s://%(domain)s"
+  #     serve_from_sub_path: true
