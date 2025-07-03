@@ -17,15 +17,6 @@ grafana:
     - secretName: grafana-tls
       hosts:
       - grafana.rohitpotato.xyz
-  persistence:
-    enabled: true
-    type: sts
-    storageClassName: "storageClassName"
-    accessModes:
-      - ReadWriteOnce
-    size: 20Gi
-    finalizers:
-      - kubernetes.io/pvc-protection
   grafana.ini:
     security:
       cookie_secure: false
