@@ -1,11 +1,17 @@
 server:
   ha:
-    enabled: false
-    replicas: 1
-    raft:
-      enabled: false
-  standalone:
     enabled: true
+    replicas: 2
+    raft:
+      enabled: true
+      # Add snapshot configuration for backup
+      setCredentials: true
+      snapshot:
+        enabled: true
+        interval: "1h"
+        retain: 24  # Keep 24 snapshots
+  standalone:
+    enabled: false
     config: |
       ui = true
       
@@ -14,8 +20,14 @@ server:
         tls_disable = 1
       }
       
-      storage "file" {
+      storage "raft" {
         path = "/vault/data"
+        retry_join {
+          leader_api_addr = "http://vault-0.vault-internal:8200"
+        }
+        retry_join {
+          leader_api_addr = "http://vault-1.vault-internal:8200"
+        }
       }
 
 ui:
@@ -23,3 +35,17 @@ ui:
 
 injector:
   enabled: true
+
+dataStorage:
+  enabled: true
+  size: 5Gi
+  storageClass: "local-path"  # Update this based on your actual storage class
+  accessModes:
+    - ReadWriteOnce
+  finalizers:
+    - kubernetes.io/pvc-protection
+
+# Add pod disruption budget for HA
+pdb:
+  enabled: true
+  maxUnavailable: 1
