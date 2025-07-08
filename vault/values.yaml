@@ -19,16 +19,15 @@ server:
         address     = "0.0.0.0:8200"
         tls_disable = 1
       }
-      
       storage "raft" {
         path = "/vault/data"
         retry_join {
           leader_api_addr = "http://vault-0.vault-internal:8201"
         }
-        retry_join {
-          leader_api_addr = "http://vault-1.vault-internal:8201"
-        }
       }
+
+      api_addr = "http://vault-active.vault-internal:8200"
+      cluster_addr = "http://$(POD_NAME).vault-internal:8201"
 
 ui:
   enabled: true
