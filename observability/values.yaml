@@ -35,6 +35,10 @@ kubeControllerManager:
     enabled: true
     https: true
     insecureSkipVerify: true
+    scheme: https
+    tlsConfig:
+      caFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+      serverName: localhost
 
 kubeScheduler:
   enabled: true
@@ -47,6 +51,10 @@ kubeScheduler:
     enabled: true
     https: true
     insecureSkipVerify: true
+    scheme: https
+    tlsConfig:
+      caFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+      serverName: localhost
 
 kubeProxy:
   enabled: true
