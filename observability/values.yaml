@@ -34,11 +34,12 @@ kubeControllerManager:
   serviceMonitor:
     enabled: true
     https: true
-    insecureSkipVerify: true
     scheme: https
     tlsConfig:
-      caFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-      serverName: localhost
+      caFile: /var/lib/rancher/k3s/server/tls/server-ca.crt
+      certFile: /var/lib/rancher/k3s/server/tls/client-kube-prometheus-stack-prometheus.crt
+      keyFile: /var/lib/rancher/k3s/server/tls/client-kube-prometheus-stack-prometheus.key
+    insecureSkipVerify: false
 
 kubeScheduler:
   enabled: true
@@ -50,11 +51,12 @@ kubeScheduler:
   serviceMonitor:
     enabled: true
     https: true
-    insecureSkipVerify: true
     scheme: https
     tlsConfig:
-      caFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-      serverName: localhost
+      caFile: /var/lib/rancher/k3s/server/tls/server-ca.crt
+      certFile: /var/lib/rancher/k3s/server/tls/client-kube-prometheus-stack-prometheus.crt
+      keyFile: /var/lib/rancher/k3s/server/tls/client-kube-prometheus-stack-prometheus.key
+    insecureSkipVerify: false
 
 kubeProxy:
   enabled: true
