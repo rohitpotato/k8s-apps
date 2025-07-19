@@ -3,9 +3,9 @@ kind: ClusterExternalSecret
 metadata:
   name: postgres-keys
 spec:
-  externalSecretMetadata:  # Override the generated ExternalSecret name
-    name: postgres-keys
+  externalSecretName: postgres-keys
   externalSecretSpec:
+    refreshPolicy: Periodic
     refreshInterval: "30s"
     secretStoreRef:
       name: vault-backend
@@ -16,7 +16,7 @@ spec:
     dataFrom:
     - extract:
         key: monospaced/database
-  namespaceSelector:
+  namespaceSelectors:
     matchExpressions:
     - key: kubernetes.io/metadata.name
       operator: In
