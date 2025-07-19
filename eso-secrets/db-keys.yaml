@@ -17,8 +17,5 @@ spec:
     - extract:
         key: monospaced/database
   namespaceSelectors:
-    matchExpressions:
-    - key: kubernetes.io/metadata.name
-      operator: In
-      values:
-      - monospaced
+  - matchLabels:
+      kubernetes.io/metadata.name=monospaced
