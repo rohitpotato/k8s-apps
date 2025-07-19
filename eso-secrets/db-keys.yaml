@@ -2,8 +2,6 @@ apiVersion: external-secrets.io/v1beta1
 kind: ClusterExternalSecret
 metadata:
   name: external-secret
-  annotations:
-    argocd.argoproj.io/sync-wave: "3"
 spec:
   externalSecretSpec:
     refreshInterval: "30s"
