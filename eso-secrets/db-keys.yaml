@@ -1,8 +1,10 @@
-apiVersion: external-secrets.io/v1
+apiVersion: external-secrets.io/v1beta1
 kind: ClusterExternalSecret
 metadata:
-  name: external-secret
+  name: postgres-keys
 spec:
+  externalSecretMetadata:  # Override the generated ExternalSecret name
+    name: postgres-keys
   externalSecretSpec:
     refreshInterval: "30s"
     secretStoreRef:
