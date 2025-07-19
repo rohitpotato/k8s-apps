@@ -5,9 +5,8 @@ metadata:
   annotations:
     argocd.argoproj.io/sync-wave: "3"
 spec:
-  refreshInterval: 30s
   externalSecretSpec:
-    refreshInterval: 30s
+    refreshInterval: "30s"
     secretStoreRef:
       name: vault-backend
       kind: ClusterSecretStore
