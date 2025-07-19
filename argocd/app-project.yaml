@@ -8,6 +8,7 @@ spec:
     - https://github.com/rohitpotato/k8s-apps.git
     - https://helm.releases.hashicorp.com
     - https://prometheus-community.github.io/helm-charts
+    - https://charts.external-secrets.io
   destinations:
     - namespace: monospaced
       server: https://kubernetes.default.svc
@@ -18,6 +19,8 @@ spec:
     - namespace: argocd
       server: https://kubernetes.default.svc
     - namespace: kube-system
+      server: https://kubernetes.default.svc
+    - namespace: external-secrets
       server: https://kubernetes.default.svc
   clusterResourceWhitelist:
     - group: '*'      # All API groups
