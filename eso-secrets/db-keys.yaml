@@ -21,3 +21,5 @@ spec:
       "kubernetes.io/metadata.name": "monospaced"
   - matchLabels:
       "kubernetes.io/metadata.name": "postgres"
+  - matchLabels:
+      "kubernetes.io/metadata.name": "analytics"
