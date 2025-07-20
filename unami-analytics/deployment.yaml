@@ -20,8 +20,10 @@ spec:
         ports:
         - containerPort: 5000
         env:
-          - name: DATABASE_URL
-            valueFrom:
-              secretKeyRef:
-                name: postgres-keys
-                key: POSTGRES_URL
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: postgres-keys
+              key: POSTGRES_URL
+        - name: DATABASE_TYPE
+          value: postgresql
