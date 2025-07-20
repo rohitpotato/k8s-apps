@@ -24,6 +24,8 @@ spec:
       server: https://kubernetes.default.svc
     - namespace: postgres
       server: https://kubernetes.default.svc
+    - namespace: analytics
+      server: https://kubernetes.default.svc
   clusterResourceWhitelist:
     - group: '*'      # All API groups
       kind: '*'       # All kinds

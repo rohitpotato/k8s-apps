@@ -1,0 +1,21 @@
+kind: Application
+apiVersion: argoproj.io/v1alpha1
+metadata:
+  name: unami
+  namespace: argocd
+spec:
+  project: k8s-apps-project
+  source:
+    repoURL: https://github.com/rohitpotato/k8s-apps.git
+    targetRevision: main
+    path: unami-analytics
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: analytics
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
