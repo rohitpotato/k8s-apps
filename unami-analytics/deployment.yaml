@@ -16,9 +16,9 @@ spec:
       containers:
       - name: unami-analytics
         image: docker.umami.is/umami-software/umami:postgresql-latest
-        imagePullPolicy: Always
         ports:
-        - containerPort: 5000
+        - containerPort: 3000
+          name: unami
         env:
         - name: DATABASE_URL
           valueFrom:
