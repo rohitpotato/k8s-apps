@@ -5,7 +5,7 @@ metadata:
   namespace: argocd
 spec:
   project: k8s-apps-project
-  source:
+  sources:
   - repoURL: https://github.com/rohitpotato/k8s-apps.git
     targetRevision: main
     path: postgres
