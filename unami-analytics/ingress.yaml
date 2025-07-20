@@ -20,7 +20,6 @@ spec:
               name: unami-analytics
               port:
                 number: 5000
-                name: http
   tls:
     - hosts:
         - analytics.rohitpotato.xyz

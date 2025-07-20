@@ -10,7 +10,7 @@ spec:
       app: unami-analytics
   template:
     metadata:
-      matchLabels:
+      labels:
         app: unami-analytics
     spec:
       containers:
