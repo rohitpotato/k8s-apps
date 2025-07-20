@@ -19,3 +19,5 @@ spec:
   namespaceSelectors:
   - matchLabels:
       "kubernetes.io/metadata.name": "monospaced"
+  - matchLabels:
+      "kubernetes.io/metadata.name": "postgres"
