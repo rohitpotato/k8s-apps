@@ -8,15 +8,16 @@ loki:
       rules_directory: /var/loki/rules
   schemaConfig:
     configs:
-      from: 2024-04-01
-      object_store: filesystem
-      store: boltdb-shipper
-      schema: v13
-      index:
-        prefix: index_
-        period: 24h
+      - from: "2024-04-01"
+        object_store: filesystem
+        store: boltdb-shipper
+        schema: v13
+        index:
+          prefix: index_
+          period: 24h
   limits_config:
     retention_period: 168h
+    
   persistence:
     enabled: true
     size: 10Gi
