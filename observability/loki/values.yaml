@@ -17,10 +17,12 @@ loki:
           period: 24h
   limits_config:
     retention_period: 168h
-    
+  querier:
+    max_concurrent: 1
+
   persistence:
     enabled: true
-    size: 10Gi
+    size: 1Gi
   nodeSelector:
     nodeRole: worker
 
@@ -28,13 +30,14 @@ loki:
 deploymentMode: SingleBinary
 
 chunksCache:
-  allocatedMemory: 512Mi
+  allocatedMemory: 256Mi
 
 resultsCache:
-  allocatedMemory: 512Mi
+  allocatedMemory: 256Mi
 
 singleBinary:
   replicas: 1
+
 
 # Zero out replica counts of other deployment modes
 # Taken from: https://grafana.com/docs/loki/next/setup/install/helm/install-monolithic/
