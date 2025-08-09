@@ -1,4 +1,6 @@
 loki:
+  commonConfig:
+    replication_factor: 1
   storage:
     type: filesystem
     filesystem:
@@ -20,3 +22,5 @@ loki:
     size: 10Gi
   nodeSelector:
     nodeRole: worker
+singleBinary:
+  replicas: 1
