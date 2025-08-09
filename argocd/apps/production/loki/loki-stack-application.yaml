@@ -1,0 +1,29 @@
+kind: Application
+version: v1alpha1
+metadata:
+  namespace: observability
+  name: loki
+  spec:
+    project: k8s-apps-project
+    sources:
+    -  repoURL: https://grafana.github.io/helm-charts
+       chart: loki
+       targetRevision: 2.10.1
+       helm:
+        valueFiles:
+        - $values/loki/values.yaml
+    - repoURL: https://github.com/rohitpotato/k8s-apps.git/
+      ref: values
+      targetRevision: main
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: observability
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+    syncOptions:
+      - CreateNamespace=true
+    managedNamespaceMetadata:
+      annotations:
+        argocd.argoproj.io/sync-wave: "1"

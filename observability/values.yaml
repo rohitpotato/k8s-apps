@@ -17,6 +17,12 @@ grafana:
     - secretName: grafana-tls
       hosts:
       - grafana.rohitpotato.xyz
+  additionalDataSources:
+    - name: loki
+      type: loki
+      access: proxy
+      url: http://loki.observability.svc.cluster.local
+      isDefault: false
 defaultRules:
   rules:
     etcd: false
@@ -26,41 +32,29 @@ kubeEtcd:
 
 kubeControllerManager:
   enabled: true
-  endpoints: ['45.136.30.195']
+  endpoints: ['45.136.30.195'] # this is master node's actual ip address
   service:
     enabled: true
     port: 10257
     targetPort: 10257
   serviceMonitor:
     enabled: true
-    https: true
-    scheme: https
-    tlsConfig:
-      caFile: /var/lib/rancher/k3s/server/tls/server-ca.crt
-      certFile: /var/lib/rancher/k3s/server/tls/client-kube-prometheus-stack-prometheus.crt
-      keyFile: /var/lib/rancher/k3s/server/tls/client-kube-prometheus-stack-prometheus.key
-    insecureSkipVerify: false
+    https: false
 
 kubeScheduler:
   enabled: true
-  endpoints: ['45.136.30.195']
+  endpoints: ['45.136.30.195'] # this is master node's actual ip address
   service:
     enabled: true
     port: 10259
     targetPort: 10259
   serviceMonitor:
     enabled: true
-    https: true
-    scheme: https
-    tlsConfig:
-      caFile: /var/lib/rancher/k3s/server/tls/server-ca.crt
-      certFile: /var/lib/rancher/k3s/server/tls/client-kube-prometheus-stack-prometheus.crt
-      keyFile: /var/lib/rancher/k3s/server/tls/client-kube-prometheus-stack-prometheus.key
-    insecureSkipVerify: false
+    https: false
 
 kubeProxy:
   enabled: true
-  endpoints: ['45.136.30.195']
+  endpoints: ['45.136.30.195'] # this is master node's actual ip address
   service:
     enabled: true
     port: 10249
