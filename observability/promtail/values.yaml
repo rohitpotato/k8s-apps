@@ -1,0 +1,4 @@
+
+nodeSelector:
+  nodeRole: worker
+namespace: monitoring
