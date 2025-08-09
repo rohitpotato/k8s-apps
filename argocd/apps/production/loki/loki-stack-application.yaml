@@ -1,5 +1,5 @@
 kind: Application
-version: v1alpha1
+version:  argoproj.io/v1alpha1
 metadata:
   namespace: argocd
   name: loki
