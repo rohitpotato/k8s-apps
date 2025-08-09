@@ -1,7 +1,7 @@
 kind: Application
 version: v1alpha1
 metadata:
-  namespace: observability
+  namespace: argocd
   name: loki
   spec:
     project: k8s-apps-project
@@ -17,7 +17,7 @@ metadata:
       targetRevision: main
   destination:
     server: https://kubernetes.default.svc
-    namespace: observability
+    namespace: monitoring
   syncPolicy:
     automated:
       selfHeal: true
