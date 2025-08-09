@@ -27,6 +27,12 @@ loki:
 
 deploymentMode: SingleBinary
 
+chunksCache:
+  allocatedMemory: 512Mi
+
+resultsCache:
+  allocatedMemory: 512Mi
+
 singleBinary:
   replicas: 1
 
