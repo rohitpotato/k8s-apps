@@ -1,18 +1,18 @@
 kind: Application
-version:  argoproj.io/v1alpha1
+apiVersion: argoproj.io/v1alpha1
 metadata:
   namespace: argocd
   name: loki
 spec:
   project: k8s-apps-project
   sources:
-  -  repoURL: https://grafana.github.io/helm-charts
-      chart: loki
-      targetRevision: 6.35.1
-      helm:
+  - repoURL: https://grafana.github.io/helm-charts
+    chart: loki
+    targetRevision: 6.35.1
+    helm:
       valueFiles:
       - $values/loki/values.yaml
-  - repoURL: https://github.com/rohitpotato/k8s-apps.git/
+  - repoURL: https://github.com/rohitpotato/k8s-apps.git
     ref: values
     targetRevision: main
   destination:

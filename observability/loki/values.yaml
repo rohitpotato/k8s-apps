@@ -18,5 +18,5 @@ loki:
   persistence:
     enabled: true
     size: 10Gi
-
-    
+  nodeSelector:
+    nodeRole: worker
