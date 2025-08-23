@@ -10,6 +10,7 @@ spec:
     - https://prometheus-community.github.io/helm-charts
     - https://charts.external-secrets.io
     - https://grafana.github.io/helm-charts
+    - https://istio-release.storage.googleapis.com/charts
   destinations:
     - namespace: monospaced
       server: https://kubernetes.default.svc
@@ -27,6 +28,8 @@ spec:
       server: https://kubernetes.default.svc
     - namespace: analytics
       server: https://kubernetes.default.svc
+    - namespace: istio-system
+      server: https://kubernetes.default.svc
   clusterResourceWhitelist:
     - group: '*'      # All API groups
-      kind: '*'       # All kinds
+      kind: '*'       # All kinds 

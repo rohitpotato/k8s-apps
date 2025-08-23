@@ -1,0 +1,89 @@
+apiVersion: networking.istio.io/v1beta1
+kind: Gateway
+metadata:
+  name: main-gateway
+  namespace: istio-system
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+  # HTTP to HTTPS redirect
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - "rohitpotato.xyz"
+    - "api.rohitpotato.xyz"
+    - "argocd.rohitpotato.xyz"
+    - "vault.rohitpotato.xyz"
+    - "analytics.rohitpotato.xyz"
+    - "grafana.rohitpotato.xyz"
+    tls:
+      httpsRedirect: true
+
+  # Frontend HTTPS
+  - port:
+      number: 443
+      name: https-frontend
+      protocol: HTTPS
+    tls:
+      mode: SIMPLE
+      credentialName: rohitpotato-xyz-tls
+    hosts:
+    - "rohitpotato.xyz"
+
+  # Backend HTTPS
+  - port:
+      number: 443
+      name: https-backend
+      protocol: HTTPS
+    tls:
+      mode: SIMPLE
+      credentialName: monospaced-backend-tls
+    hosts:
+    - "api.rohitpotato.xyz"
+
+  # ArgoCD HTTPS
+  - port:
+      number: 443
+      name: https-argocd
+      protocol: HTTPS
+    tls:
+      mode: SIMPLE
+      credentialName: argocd-tls
+    hosts:
+    - "argocd.rohitpotato.xyz"
+
+  # Vault HTTPS
+  - port:
+      number: 443
+      name: https-vault
+      protocol: HTTPS
+    tls:
+      mode: SIMPLE
+      credentialName: vault-ingress-tls
+    hosts:
+    - "vault.rohitpotato.xyz"
+
+  # Analytics HTTPS
+  - port:
+      number: 443
+      name: https-analytics
+      protocol: HTTPS
+    tls:
+      mode: SIMPLE
+      credentialName: unami-analytics-tls
+    hosts:
+    - "analytics.rohitpotato.xyz"
+
+  # Grafana HTTPS
+  - port:
+      number: 443
+      name: https-grafana
+      protocol: HTTPS
+    tls:
+      mode: SIMPLE
+      credentialName: grafana-tls
+    hosts:
+    - "grafana.rohitpotato.xyz"

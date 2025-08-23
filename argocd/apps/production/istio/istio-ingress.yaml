@@ -1,0 +1,27 @@
+kind: Application
+apiVersion: argoproj.io/v1alpha1
+spec:
+  project: k8s-apps-project
+  namespace: istio-system
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+  sources:
+    - repoURL: https://istio-release.storage.googleapis.com/charts
+      targetRevision: 1.27.0
+      chart: istio-ingressgateway
+      helm:
+        valueFiles:
+        - $values/istio/istio-ingress-values.yaml
+    - repoURL: https://github.com/rohitpotato/k8s-apps.git
+      targetRevision: main
+      ref: values
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: istio-system
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
