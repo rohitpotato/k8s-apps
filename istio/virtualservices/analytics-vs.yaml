@@ -1,0 +1,17 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: analytics-vs
+  namespace: analytics
+spec:
+  hosts:
+  - "analytics.rohitpotato.xyz"
+  gateways:
+  - istio-system/main-gateway
+  http:
+  - route:
+    - destination:
+        host: unami-analytics
+        port:
+          number: 3000
+      weight: 100

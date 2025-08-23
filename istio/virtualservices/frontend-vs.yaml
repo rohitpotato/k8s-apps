@@ -1,0 +1,17 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: frontend-vs
+  namespace: monospaced
+spec:
+  hosts:
+  - "rohitpotato.xyz"
+  gateways:
+  - istio-system/main-gateway
+  http:
+  - route:
+    - destination:
+        host: monospaced-frontend
+        port:
+          number: 3000
+      weight: 100

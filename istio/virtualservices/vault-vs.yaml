@@ -1,0 +1,17 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: vault-vs
+  namespace: vault
+spec:
+  hosts:
+  - "vault.rohitpotato.xyz"
+  gateways:
+  - istio-system/main-gateway
+  http:
+  - route:
+    - destination:
+        host: vault
+        port:
+          number: 8200
+      weight: 100
