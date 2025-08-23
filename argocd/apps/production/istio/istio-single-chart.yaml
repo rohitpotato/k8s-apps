@@ -1,16 +1,16 @@
 kind: Application
 apiVersion: argoproj.io/v1alpha1
 metadata:
-  name: istio-ingressgateway
+  name: istio-single
   namespace: argocd
   annotations:
-    argocd.argoproj.io/sync-wave: "2"
+    argocd.argoproj.io/sync-wave: "0"
 spec:
   project: k8s-apps-project
   sources:
     - repoURL: https://istio-release.storage.googleapis.com/charts
-      targetRevision: 1.27.0
-      chart: gateway
+      targetRevision: 1.20.0
+      chart: istio
       helm:
         valueFiles:
         - $values/istio/istio-ingress-values.yaml
