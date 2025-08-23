@@ -16,15 +16,20 @@ service:
       port: 443
       targetPort: 443
 
-# Security context: Ensure capability for low-port binding (defaults may auto-set minimal, but explicit for safety)
+# Pod-level security context
 securityContext:
-  capabilities:
-    add:
-      - NET_BIND_SERVICE
   # Run as non-root user (default 1337)
   runAsUser: 1337
   runAsGroup: 1337
   fsGroup: 1337
+
+# Container-level security context with capabilities
+containerSecurityContext:
+  capabilities:
+    add:
+      - NET_BIND_SERVICE
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: false
 
 # Optional: If multi-node, add nodeSelector or affinity as needed
 # affinity: {}  # Customize if pinning to specific nodes
