@@ -1,115 +1,41 @@
-# Istio configuration for bare metal K3s with ambient mode
+# Istio Gateway configuration for bare metal K3s
 # Uses host ports 80 and 443 for HTTP/HTTPS traffic
 
-global:
-  # Disable automatic sidecar injection - we'll use ambient mode
-  defaultResources:
-    requests:
-      cpu: 200m
-      memory: 256Mi
-    limits:
-      cpu: 2000m
-      memory: 2048Mi
+# Deployment type: Use 'daemonset' for multi-node to bind on all nodes
+type: DaemonSet
 
-pilot:
-  # Reduce pilot resources for bare metal
-  resources:
-    requests:
-      cpu: 200m
-      memory: 512Mi
-    limits:
-      cpu: 1000m
-      memory: 1024Mi
+# Enable host network to bind directly to host ports 80/443
+hostNetwork: true
 
-# Configure ingress gateway for bare metal with host ports
-gateways:
-  istio-ingressgateway:
-    enabled: true
-    # Enable host network to bind directly to host ports 80/443
-    hostNetwork: true
-    # Use daemonset for multi-node setup
-    type: daemonset
-    # Service config: ClusterIP since we're using hostNetwork
-    service:
-      type: ClusterIP
-      ports:
-        - name: http
-          port: 80
-          targetPort: 80
-        - name: https
-          port: 443
-          targetPort: 443
-    # Security context for low-port binding
-    securityContext:
-      capabilities:
-        add:
-          - NET_BIND_SERVICE
-      runAsUser: 1337
-      runAsGroup: 1337
-      fsGroup: 1337
-    # Resource limits for bare metal
-    resources:
-      requests:
-        cpu: 200m
-        memory: 256Mi
-      limits:
-        cpu: 2000m
-        memory: 1024Mi
+# Service config: ClusterIP since we're using hostNetwork (no LB or NodePort needed)
+service:
+  type: ClusterIP
+  ports:
+    # Limit to only HTTP/HTTPS to avoid conflicts
+    - name: http
+      port: 80
+      targetPort: 80
+    - name: https
+      port: 443
+      targetPort: 443
 
-# Enable ambient mode for lower resource usage
-ambient:
-  enabled: true
-  # Configure ztunnel for ambient mode
-  ztunnel:
-    enabled: true
-    resources:
-      requests:
-        cpu: 100m
-        memory: 128Mi
-      limits:
-        cpu: 1000m
-        memory: 512Mi
+# Security context for low-port binding
+securityContext:
+  capabilities:
+    add:
+      - NET_BIND_SERVICE
+  runAsUser: 1337
+  runAsGroup: 1337
+  fsGroup: 1337
 
-# Enable telemetry for monitoring
-telemetry:
-  enabled: true
-  v2:
-    enabled: true
-    prometheus:
-      enabled: true
-      configOverride:
-        gateway:
-          scrape_interval: 15s
+# Resource limits for bare metal
+resources:
+  requests:
+    cpu: 200m
+    memory: 256Mi
+  limits:
+    cpu: 2000m
+    memory: 1024Mi
 
-# Enable tracing for request tracing
-tracing:
-  enabled: true
-  provider: jaeger
-  jaeger:
-    enabled: true
-    resources:
-      requests:
-        cpu: 100m
-        memory: 128Mi
-      limits:
-        cpu: 500m
-        memory: 512Mi
-
-# Enable Kiali for service mesh visualization
-kiali:
-  enabled: true
-  resources:
-    requests:
-      cpu: 100m
-      memory: 128Mi
-    limits:
-      cpu: 500m
-      memory: 512Mi
-
-# Disable Grafana (you have your own)
-grafana:
-  enabled: false
-
-# Disable Prometheus (you have kube-prometheus-stack)
-prometheus:
-  enabled: false
+# Optional: If multi-node, add nodeSelector or affinity as needed
+# affinity: {}  # Customize if pinning to specific nodes
