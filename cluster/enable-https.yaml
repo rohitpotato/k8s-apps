@@ -10,5 +10,11 @@ spec:
       name: letsencrypt-production
     solvers:
     - http01:
-        ingress:
-          class: traefik
+        gatewayHTTPRoute:
+          labels:
+            istio: ingressgateway
+          parentRefs:
+            - name: istio-ingressgateway
+              namespace: istio-system
+              kind: Gateway
+              group: networking.istio.io

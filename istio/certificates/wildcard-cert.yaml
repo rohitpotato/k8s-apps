@@ -1,0 +1,17 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: rohitpotato-xyz-tls
+  namespace: istio-system
+spec:
+  secretName: rohitpotato-xyz-tls
+  dnsNames:
+    - rohitpotato.xyz
+    - api.rohitpotato.xyz
+    - argocd.rohitpotato.xyz
+    - vault.rohitpotato.xyz
+    - analytics.rohitpotato.xyz
+    - grafana.rohitpotato.xyz
+  issuerRef:
+    name: letsencrypt-production
+    kind: ClusterIssuer
