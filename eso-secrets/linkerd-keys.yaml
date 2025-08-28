@@ -1,0 +1,25 @@
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: linkerd-identity-issuer-secret
+spec:
+  secretStoreRef:
+    name: vault-backend
+    kind: ClusterSecretStore
+    refreshInterval: 1h
+  target:
+    name: linkerd-identity-issuer-secret
+    type: kubernetes.io/tls
+    creationPolicy: Owner
+    data:
+      tls.crt: {{ .issuer-ca }}
+      tls.key: {{ .issuer-key }}
+  data:
+  - secretKey: issuer-ca
+    remoteRef:
+      key: linkerd/certificates
+      property: issuer-ca
+  - secretKey: issuer-key
+    remoteRef:
+      key: linkerd/certificates
+      property: issuer-key
