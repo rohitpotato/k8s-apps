@@ -10,6 +10,7 @@ spec:
     - https://prometheus-community.github.io/helm-charts
     - https://charts.external-secrets.io
     - https://grafana.github.io/helm-charts
+    - https://linkerd.github.io/helm-charts/
   destinations:
     - namespace: monospaced
       server: https://kubernetes.default.svc
@@ -26,6 +27,8 @@ spec:
     - namespace: postgres
       server: https://kubernetes.default.svc
     - namespace: analytics
+      server: https://kubernetes.default.svc
+    - namespace: linkerd
       server: https://kubernetes.default.svc
   clusterResourceWhitelist:
     - group: '*'      # All API groups
