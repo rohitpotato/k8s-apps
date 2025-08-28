@@ -9,6 +9,7 @@ spec:
   project: k8s-apps-project
   sources:
   - repoURL: https://helm.linkerd.io/edge
+    targetRevision: 1.16.11
     chart: linkerd-control-plane
     helm:
       parameters:
