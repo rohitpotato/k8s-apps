@@ -14,7 +14,7 @@ spec:
     helm:
     # k3s already adds the crds with traefik, so we can safely disable it here
       parameters:
-      - name: installGatewayAPI
+      - name: enableHttpRoutes
         value: "false"
   - repoURL: https://github.com/rohitpotato/k8s-apps.git
     targetRevision: main
