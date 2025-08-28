@@ -8,14 +8,18 @@ metadata:
 spec:
   project: k8s-apps-project
   sources:
-  - repoURL: https://helm.linkerd.io/edge
+  - repoURL: https://helm.linkerd.io/stable
     targetRevision: 1.8.0
     chart: linkerd-crds
+    helm:
+      valueFiles:
+      - $values/linkerd/crd-values.yaml
   - repoURL: https://github.com/rohitpotato/k8s-apps.git
     targetRevision: main
     path: linkerd
     directory:
       include: trust-anchor-configmap.yaml
+    ref: values
   destination:
     server: https://kubernetes.default.svc
     namespace: linkerd
