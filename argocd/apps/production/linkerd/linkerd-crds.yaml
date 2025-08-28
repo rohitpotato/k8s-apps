@@ -12,8 +12,10 @@ spec:
     targetRevision: 1.8.0
     chart: linkerd-crds
     helm:
-      valueFiles:
-      - $values/linkerd/crd-values.yaml
+    # k3s already adds the crds with traefik, so we can safely disable it here
+      parameters:
+      - name: installGatewayAPI
+        value: "false"
   - repoURL: https://github.com/rohitpotato/k8s-apps.git
     targetRevision: main
     path: linkerd
