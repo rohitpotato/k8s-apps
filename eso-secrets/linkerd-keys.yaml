@@ -10,8 +10,9 @@ spec:
     kind: ClusterSecretStore
   target:
     name: linkerd-identity-issuer
-    type: kubernetes.io/tls
     creationPolicy: Owner
+    template:
+      type: kubernetes.io/tls
   data:
   - secretKey: tls.crt
     remoteRef:
