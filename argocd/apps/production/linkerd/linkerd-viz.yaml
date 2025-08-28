@@ -1,0 +1,28 @@
+kind: Application
+apiVersion: argoproj.io/v1alpha1
+metadata:
+  name: linkerd-viz
+  namespace: argocd
+  annotations:
+    "argocd.argoproj.io/sync-wave": "2"
+spec:
+  project: k8s-apps-project
+  sources:
+  - repoURL: https://helm.linkerd.io/stable
+    targetRevision: 30.12.11
+    chart: linkerd-viz
+  - repoURL: https://github.com/rohitpotato/k8s-apps.git
+    targetRevision: main
+    path: linkerd
+    directory:
+      include: viz/ingress.yaml
+    ref: values
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: linkerd
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+    syncOptions:
+      - CreateNamespace=true
