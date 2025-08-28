@@ -9,6 +9,7 @@ spec:
   project: k8s-apps-project
   sources:
   - repoURL: https://helm.linkerd.io/edge
+    targetRevision: 1.8.0
     chart: linkerd-crds
   - repoURL: https://github.com/rohitpotato/k8s-apps.git
     targetRevision: main
