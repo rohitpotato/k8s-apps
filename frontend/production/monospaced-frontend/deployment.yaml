@@ -17,6 +17,11 @@ spec:
         - name: monospaced-frontend
           image: ghcr.io/rohitpotato/monospaced-stack/frontend:main-f08ab57
           imagePullPolicy: Always
+          env:
+            - name: NODE_OPTIONS
+              value: "--max-old-space-size=256"
+            - name: NEXT_TELEMETRY_DISABLED
+              value: "1"
           ports:
             - containerPort: 3000
           readinessProbe:
