@@ -1,17 +1,8 @@
 server:
   ha:
-    enabled: true
-    replicas: 2
-    raft:
-      enabled: true
-      # Add snapshot configuration for backup
-      setCredentials: true
-      snapshot:
-        enabled: true
-        interval: "1h"
-        retain: 24  # Keep 24 snapshots
-  standalone:
     enabled: false
+  standalone:
+    enabled: true
     config: |
       ui = true
       
@@ -19,15 +10,9 @@ server:
         address     = "0.0.0.0:8200"
         tls_disable = 1
       }
-      storage "raft" {
+      storage "file" {
         path = "/vault/data"
-        retry_join {
-          leader_api_addr = "http://vault-0.vault-internal:8200"
-        }
       }
-
-      api_addr = "http://vault-active.vault-internal:8200"
-      cluster_addr = "http://$(POD_NAME).vault-internal:8201"
 
 ui:
   enabled: true
@@ -35,21 +20,21 @@ ui:
 injector:
   enabled: true
 
+# Use ReadWriteOnce storage for single node
 dataStorage:
   enabled: true
   size: 5Gi
-  storageClass: "local-path"  # Update this based on your actual storage class
+  storageClass: "local-path"
   accessModes:
     - ReadWriteOnce
   finalizers:
     - kubernetes.io/pvc-protection
 
-# Add pod disruption budget for HA
+# Remove PDB for single node
 pdb:
-  enabled: true
-  maxUnavailable: 1
+  enabled: false
 
-# Resource limits for Vault pods
+# Resource limits for Vault pod
 server:
   resources:
     requests:
