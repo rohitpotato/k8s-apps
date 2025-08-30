@@ -1,0 +1,33 @@
+kind: Application
+apiVersion: argoproj.io/v1alpha1
+metadata:
+  name: linkerd-crds
+  namespace: argocd
+  annotations:
+    "argocd.argoproj.io/sync-wave": "0"
+spec:
+  project: k8s-apps-project
+  sources:
+  - repoURL: https://helm.linkerd.io/stable
+    targetRevision: 1.8.0
+    chart: linkerd-crds
+    helm:
+    # k3s already adds the crds with traefik, so we can safely disable it here
+      parameters:
+      - name: enableHttpRoutes
+        value: "false"
+  - repoURL: https://github.com/rohitpotato/k8s-apps.git
+    targetRevision: main
+    path: linkerd
+    directory:
+      include: trust-anchor-configmap.yaml
+    ref: values
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: linkerd
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+    syncOptions:
+      - CreateNamespace=true
