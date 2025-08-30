@@ -17,6 +17,9 @@ spec:
         - name: monospaced-backend
           image: ghcr.io/rohitpotato/monospaced-stack/backend:latest
           imagePullPolicy: Always
+          env:
+            - name: NODE_OPTIONS
+              value: "--max-old-space-size=256"
           envFrom:
             - configMapRef:
                 name: monospaced-backend-config
