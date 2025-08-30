@@ -1,0 +1,28 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: linkerd-control-plane
+  namespace: argocd
+  annotations:
+    "argocd.argoproj.io/sync-wave": "1"
+spec:
+  project: k8s-apps-project
+  sources:
+  - repoURL: https://helm.linkerd.io/stable
+    targetRevision: 1.16.11
+    chart: linkerd-control-plane
+    helm:
+      parameters:
+      - name: identity.externalCA
+        value: "true"
+      - name: identity.issuer.scheme
+        value: "kubernetes.io/tls"
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: linkerd
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+    syncOptions:
+      - CreateNamespace=true
