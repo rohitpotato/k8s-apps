@@ -17,6 +17,22 @@ spec:
         value: "true"
       - name: identity.issuer.scheme
         value: "kubernetes.io/tls"
+      - name: proxy.resources.cpu.request
+        value: "200m"
+      - name: proxy.resources.cpu.limit
+        value: "400m"
+      - name: proxy.resources.memory.request
+        value: "256Mi"
+      - name: proxy.resources.memory.limit
+        value: "512Mi"
+      - name: proxyInit.resources.cpu.request
+        value: "100m"
+      - name: proxyInit.resources.cpu.limit
+        value: "200m"
+      - name: proxyInit.resources.memory.request
+        value: "128Mi"
+      - name: proxyInit.resources.memory.limit
+        value: "256Mi"
   destination:
     server: https://kubernetes.default.svc
     namespace: linkerd
