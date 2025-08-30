@@ -68,11 +68,11 @@ prometheus:
   prometheusSpec:
     resources:
       requests:
-        memory: "512Mi"
-        cpu: "400m"
+        memory: "400Mi"
+        cpu: "200m"
       limits:
-        memory: "1Gi"
-        cpu: "800m"
+        memory: "800Mi"
+        cpu: "400m"
 
 grafana:
   resources:
@@ -88,7 +88,6 @@ alertmanager:
     resources:
       requests:
         memory: "128Mi"
-        cpu: "100m"
-      limits:
+        cpu: "100m"      limits:
         memory: "256Mi"
         cpu: "200m"
