@@ -62,3 +62,33 @@ kubeProxy:
   serviceMonitor:
     enabled: true
     https: false
+
+# Resource limits for Prometheus stack components
+prometheus:
+  prometheusSpec:
+    resources:
+      requests:
+        memory: "512Mi"
+        cpu: "400m"
+      limits:
+        memory: "1Gi"
+        cpu: "800m"
+
+grafana:
+  resources:
+    requests:
+      memory: "128Mi"
+      cpu: "100m"
+    limits:
+      memory: "256Mi"
+      cpu: "200m"
+
+alertmanager:
+  alertmanagerSpec:
+    resources:
+      requests:
+        memory: "128Mi"
+        cpu: "100m"
+      limits:
+        memory: "256Mi"
+        cpu: "200m"

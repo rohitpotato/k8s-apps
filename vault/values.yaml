@@ -48,3 +48,13 @@ dataStorage:
 pdb:
   enabled: true
   maxUnavailable: 1
+
+# Resource limits for Vault pods
+server:
+  resources:
+    requests:
+      memory: "512Mi"
+      cpu: "300m"
+    limits:
+      memory: "1Gi"
+      cpu: "600m"
