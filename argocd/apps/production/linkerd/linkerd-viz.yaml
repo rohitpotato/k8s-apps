@@ -4,15 +4,19 @@ metadata:
   name: linkerd-viz
   namespace: argocd
   annotations:
-    "argocd.argoproj.io/sync-wave": "2"
+    "argocd.argoproj.io/sync-wave": "5"
 spec:
   project: k8s-apps-project
   sources:
   - repoURL: https://helm.linkerd.io/stable
     targetRevision: 30.12.11
     chart: linkerd-viz
+    helm:
+      valueFiles:
+      - $values/linkerd/linkerd-viz/values.yaml
   - repoURL: https://github.com/rohitpotato/k8s-apps.git
     targetRevision: main
+    ref: values
     path: linkerd
     directory:
       include: linkerd-viz-ingress.yaml
