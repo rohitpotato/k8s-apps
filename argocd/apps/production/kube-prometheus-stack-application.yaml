@@ -16,6 +16,7 @@ spec:
     helm:
       valueFiles:
       - $values/observability/values.yaml
+      - $values/observability/prometheus/values.yaml
   - repoURL: https://github.com/rohitpotato/k8s-apps.git
     targetRevision: main
     ref: values
