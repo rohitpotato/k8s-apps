@@ -1,6 +1,3 @@
-dashboard:
-  enforcedHostRegexp: ".*"
-
 # Configure external Prometheus
 prometheus:
   enabled: false
@@ -47,6 +44,7 @@ tapInjector:
 
 # Dashboard component resource limits
 dashboard:
+  enforcedHostRegexp: ".*"
   resources:
     requests:
       memory: "64Mi"
