@@ -1,25 +1,24 @@
 kind: Application
 apiVersion: argoproj.io/v1alpha1
 metadata:
+  name: linkerd-viz
   namespace: argocd
-  name: loki
   annotations:
-    argocd.argoproj.io/sync-wave: "6"
+    "argocd.argoproj.io/sync-wave": "2"
 spec:
   project: k8s-apps-project
   sources:
-  - repoURL: https://grafana.github.io/helm-charts
-    chart: loki
-    targetRevision: 6.35.1
-    helm:
-      valueFiles:
-      - $values/observability/loki/values.yaml
+  - repoURL: https://helm.linkerd.io/stable
+    targetRevision: 30.12.11
+    chart: linkerd-viz
   - repoURL: https://github.com/rohitpotato/k8s-apps.git
-    ref: values
     targetRevision: main
+    path: linkerd
+    directory:
+      include: linkerd-viz-ingress.yaml
   destination:
     server: https://kubernetes.default.svc
-    namespace: monitoring
+    namespace: linkerd
   syncPolicy:
     automated:
       selfHeal: true
