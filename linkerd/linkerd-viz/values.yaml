@@ -1,3 +1,6 @@
+dashboard:
+  enforcedHostRegexp: ".*"
+
 # Configure external Prometheus
 prometheus:
   enabled: false
