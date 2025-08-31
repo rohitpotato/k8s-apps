@@ -5,6 +5,8 @@ metadata:
   namespace: argocd
   labels:
     name: monospaced-frontend
+  annotations:
+    argocd.argoproj.io/sync-wave: "4"
 spec:
   project: k8s-apps-project
   source:
