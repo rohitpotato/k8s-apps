@@ -1,0 +1,59 @@
+# Configure external Prometheus
+prometheus:
+  enabled: false
+  url: http://prometheus-operated.monitoring.svc.cluster.local:9090
+
+# Configure external Grafana
+grafana:
+  enabled: false
+  url: http://grafana.monitoring.svc.cluster.local:80
+
+# Resource limits for Linkerd Viz components
+web:
+  resources:
+    requests:
+      memory: "64Mi"
+      cpu: "50m"
+    limits:
+      memory: "128Mi"
+      cpu: "100m"
+
+# Tap component resource limits
+tap:
+  resources:
+    requests:
+      memory: "64Mi"
+      cpu: "50m"
+    limits:
+      memory: "128Mi"
+      cpu: "100m"
+
+# Tap Injector component resource limits
+tapInjector:
+  resources:
+    requests:
+      memory: "64Mi"
+      cpu: "50m"
+    limits:
+      memory: "128Mi"
+      cpu: "100m"
+
+# Dashboard component resource limits
+dashboard:
+  resources:
+    requests:
+      memory: "64Mi"
+      cpu: "50m"
+    limits:
+      memory: "128Mi"
+      cpu: "100m"
+
+# Metrics API component resource limits
+metricsAPI:
+  resources:
+    requests:
+      memory: "64Mi"
+      cpu: "50m"
+    limits:
+      memory: "128Mi"
+      cpu: "100m"
