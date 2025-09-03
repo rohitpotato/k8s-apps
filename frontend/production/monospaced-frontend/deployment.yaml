@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: monospaced-frontend
-          image: ghcr.io/rohitpotato/monospaced-stack/frontend:main-0805d49
+          image: ghcr.io/rohitpotato/monospaced-stack/frontend:main-38dd420
           imagePullPolicy: Always
           env:
             - name: NODE_OPTIONS
