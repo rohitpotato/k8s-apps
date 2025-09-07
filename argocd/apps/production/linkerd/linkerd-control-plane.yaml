@@ -33,6 +33,8 @@ spec:
         value: "128Mi"
       - name: proxyInit.resources.memory.limit
         value: "256Mi"
+      - name: nodeSelector.nodeRole
+        value: "worker"
   destination:
     server: https://kubernetes.default.svc
     namespace: linkerd

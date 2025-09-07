@@ -13,6 +13,20 @@ spec:
       labels:
         app: monospaced-backend
     spec:
+      nodeSelector:
+        nodeRole: worker
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - monospaced-backend
+              topologyKey: kubernetes.io/hostname
       containers:
         - name: monospaced-backend
           image: ghcr.io/rohitpotato/monospaced-stack/backend:latest

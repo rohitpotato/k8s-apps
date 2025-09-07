@@ -1,8 +1,37 @@
 nodeSelector:
   nodeRole: worker
 
+# Pod anti-affinity for better distribution across worker nodes
+affinity:
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+    - weight: 100
+      podAffinityTerm:
+        labelSelector:
+          matchExpressions:
+          - key: app.kubernetes.io/name
+            operator: In
+            values:
+            - kube-prometheus-stack
+        topologyKey: kubernetes.io/hostname
+
 grafana:
   enabled: true
+  # Ensure Grafana runs on worker nodes with anti-affinity
+  nodeSelector:
+    nodeRole: worker
+  affinity:
+    podAntiAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchExpressions:
+            - key: app.kubernetes.io/name
+              operator: In
+              values:
+              - grafana
+          topologyKey: kubernetes.io/hostname
   ingress:
     enabled: true
     annotations:
@@ -73,19 +102,50 @@ kubeProxy:
 # Resource limits for Prometheus stack components
 prometheus:
   prometheusSpec:
+    # Ensure Prometheus runs on worker nodes with anti-affinity
+    nodeSelector:
+      nodeRole: worker
+    affinity:
+      podAntiAffinity:
+        preferredDuringSchedulingIgnoredDuringExecution:
+        - weight: 100
+          podAffinityTerm:
+            labelSelector:
+              matchExpressions:
+              - key: app.kubernetes.io/name
+                operator: In
+                values:
+                - prometheus
+            topologyKey: kubernetes.io/hostname
     resources:
       requests:
-        memory: "400Mi"
+        memory: "512Mi"
         cpu: "200m"
       limits:
-        memory: "800Mi"
+        memory: "1Gi"
         cpu: "400m"
 
 alertmanager:
   alertmanagerSpec:
+    # Ensure AlertManager runs on worker nodes with anti-affinity
+    nodeSelector:
+      nodeRole: worker
+    affinity:
+      podAntiAffinity:
+        preferredDuringSchedulingIgnoredDuringExecution:
+        - weight: 100
+          podAffinityTerm:
+            labelSelector:
+              matchExpressions:
+              - key: app.kubernetes.io/name
+                operator: In
+                values:
+                - alertmanager
+            topologyKey: kubernetes.io/hostname
     resources:
       requests:
         memory: "128Mi"
         cpu: "100m"
+      limits:
         memory: "256Mi"
         cpu: "200m"

@@ -36,6 +36,20 @@ pdb:
 
 # Resource limits for Vault pod
 server:
+  nodeSelector:
+    nodeRole: worker
+  affinity:
+    podAntiAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchExpressions:
+            - key: app.kubernetes.io/name
+              operator: In
+              values:
+              - vault
+          topologyKey: kubernetes.io/hostname
   resources:
     requests:
       memory: "256Mi"

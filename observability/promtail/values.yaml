@@ -1,0 +1,52 @@
+# Promtail configuration for worker node deployment
+# Ensure Promtail runs on worker nodes with anti-affinity
+nodeSelector:
+  nodeRole: worker
+
+affinity:
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+    - weight: 100
+      podAffinityTerm:
+        labelSelector:
+          matchExpressions:
+          - key: app.kubernetes.io/name
+            operator: In
+            values:
+            - promtail
+        topologyKey: kubernetes.io/hostname
+
+resources:
+  requests:
+    memory: "32Mi"
+    cpu: "25m"
+  limits:
+    memory: "64Mi"
+    cpu: "100m"
+
+# Configure Promtail to only scrape from frontend pods
+config:
+  clients:
+    - url: http://loki.monitoring.svc.cluster.local:3100/loki/api/v1/push
+  scrape_configs:
+    - job_name: kubernetes-pods-frontend
+      kubernetes_sd_configs:
+        - role: pod
+      relabel_configs:
+        # Only scrape pods with app=monospaced-frontend label
+        - source_labels: [__meta_kubernetes_pod_label_app]
+          action: keep
+          regex: monospaced-frontend
+        # Set the log path
+        - source_labels: [__meta_kubernetes_pod_container_name]
+          target_label: container
+        - source_labels: [__meta_kubernetes_pod_name]
+          target_label: pod
+        - source_labels: [__meta_kubernetes_namespace]
+          target_label: namespace
+        # Set the log path for container logs
+        - target_label: __path__
+          replacement: /var/log/pods/*$1/*.log
+          source_labels:
+            - __meta_kubernetes_pod_uid
+            - __meta_kubernetes_pod_container_name
