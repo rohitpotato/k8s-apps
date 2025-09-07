@@ -12,14 +12,11 @@ spec:
     chart: promtail
     targetRevision: 6.17.0
     helm:
-      values: |
-        resources:
-          requests:
-            memory: "64Mi"
-            cpu: "50m"
-          limits:
-            memory: "128Mi"
-            cpu: "150m"
+      valueFiles:
+      - $values/observability/promtail/values.yaml
+  - repoURL: https://github.com/rohitpotato/k8s-apps.git
+    ref: values
+    targetRevision: main
   destination:
     server: https://kubernetes.default.svc
     namespace: monitoring

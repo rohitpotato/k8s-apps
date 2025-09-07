@@ -2,6 +2,24 @@
 prometheus:
   enabled: false
 
+# Node selector for worker nodes
+nodeSelector:
+  nodeRole: worker
+
+# Pod anti-affinity for better distribution
+affinity:
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+    - weight: 100
+      podAffinityTerm:
+        labelSelector:
+          matchExpressions:
+          - key: app.kubernetes.io/name
+            operator: In
+            values:
+            - linkerd-viz
+        topologyKey: kubernetes.io/hostname
+
 # Configure external Grafana
 grafana:
   enabled: false

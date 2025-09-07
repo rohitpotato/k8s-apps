@@ -13,6 +13,20 @@ spec:
       labels:
         app: unami-analytics
     spec:
+      nodeSelector:
+        nodeRole: worker
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - unami-analytics
+              topologyKey: kubernetes.io/hostname
       containers:
       - name: unami-analytics
         image: docker.umami.is/umami-software/umami:postgresql-latest

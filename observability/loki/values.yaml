@@ -40,11 +40,11 @@ singleBinary:
   replicas: 1
   resources:
     requests:
-      memory: "200Mi"
+      memory: "128Mi"
       cpu: "100m"
     limits:
-      memory: "400Mi"
-      cpu: "300m"
+      memory: "256Mi"
+      cpu: "200m"
 
 
 # Zero out replica counts of other deployment modes

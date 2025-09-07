@@ -13,6 +13,20 @@ spec:
       labels:
         app: monospaced-frontend
     spec:
+      nodeSelector:
+        nodeRole: worker
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - monospaced-frontend
+              topologyKey: kubernetes.io/hostname
       containers:
         - name: monospaced-frontend
           image: ghcr.io/rohitpotato/monospaced-stack/frontend:main-38dd420
