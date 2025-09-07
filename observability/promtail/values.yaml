@@ -1,9 +1,12 @@
 # Promtail configuration for worker node deployment
 # Ensure Promtail runs on worker nodes with anti-affinity
-nodeSelector:
-  nodeRole: worker
-
 affinity:
+  nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: node-role.kubernetes.io/control-plane
+          operator: DoesNotExist
   podAntiAffinity:
     preferredDuringSchedulingIgnoredDuringExecution:
     - weight: 100
@@ -24,29 +27,37 @@ resources:
     memory: "64Mi"
     cpu: "100m"
 
-# Configure Promtail to only scrape from frontend pods
+# Configure Promtail to scrape from all pods
 config:
   clients:
     - url: http://loki.monitoring.svc.cluster.local:3100/loki/api/v1/push
   scrape_configs:
-    - job_name: kubernetes-pods-frontend
+    - job_name: kubernetes-pods-monospaced
       kubernetes_sd_configs:
         - role: pod
+          namespaces:
+            names:
+            - monospaced  # Only discover pods in monospaced namespace
       relabel_configs:
         # Only scrape pods with app=monospaced-frontend label
         - source_labels: [__meta_kubernetes_pod_label_app]
           action: keep
           regex: monospaced-frontend
-        # Set the log path
+        # Set labels
         - source_labels: [__meta_kubernetes_pod_container_name]
           target_label: container
         - source_labels: [__meta_kubernetes_pod_name]
           target_label: pod
         - source_labels: [__meta_kubernetes_namespace]
           target_label: namespace
+        - source_labels: [__meta_kubernetes_pod_node_name]
+          target_label: node
         # Set the log path for container logs
         - target_label: __path__
           replacement: /var/log/pods/*$1/*.log
           source_labels:
             - __meta_kubernetes_pod_uid
             - __meta_kubernetes_pod_container_name
+        # Drop the original labels to avoid confusion
+        - action: labeldrop
+          regex: __meta_kubernetes_pod_label_.*
