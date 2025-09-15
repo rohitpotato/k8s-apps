@@ -29,7 +29,7 @@ spec:
               topologyKey: kubernetes.io/hostname
       containers:
         - name: monospaced-frontend
-          image: ghcr.io/rohitpotato/monospaced-stack/frontend:main-9947a62
+          image: ghcr.io/rohitpotato/monospaced-stack/frontend:main-fd6f9e3
           imagePullPolicy: Always
           env:
             - name: NODE_OPTIONS
