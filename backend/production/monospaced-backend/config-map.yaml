@@ -5,3 +5,4 @@ metadata:
   namespace: monospaced
 data:
   DATABASE_URL: postgresql://rohit:mono@localhost:5432/monospaced?schema=public
+  REDIS_HOST: redis://default:monospaced@redis-master.redis.svc.cluster.local:6379/0
