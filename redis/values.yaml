@@ -6,8 +6,8 @@ auth:
 
 image:
   registry: docker.io
-  repository: redis
-  tag: 8.2.2-alpine
+  repository: bitnami/redis
+  tag: latest  # Only "latest" tag available for hardened images
 
 master:
   service:
