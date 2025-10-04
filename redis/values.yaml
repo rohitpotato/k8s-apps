@@ -6,9 +6,8 @@ auth:
 
 image:
   registry: docker.io
-  repository: bitnami/redis
-  tag: latest  # Only "latest" tag available for hardened images
-
+  repository: bitnamilegacy/redis
+  
 master:
   service:
     type: ClusterIP
