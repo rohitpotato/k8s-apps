@@ -4,7 +4,15 @@ auth:
   existingSecret: redis-secret
   existingSecretPasswordKey: redis_password
 
+image:
+  registry: docker.io
+  repository: bitnami/redis
+  tag: latest  # Only "latest" tag available for hardened images
+
 master:
+  service:
+    type: ClusterIP
+    port: 6379
   persistence:
     enabled: true
     size: 1Gi
