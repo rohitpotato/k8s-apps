@@ -12,6 +12,7 @@ spec:
     - https://grafana.github.io/helm-charts
     - https://helm.linkerd.io/edge
     - https://helm.linkerd.io/stable
+    - https://charts.bitnami.com/bitnami
   destinations:
     - namespace: monospaced
       server: https://kubernetes.default.svc
