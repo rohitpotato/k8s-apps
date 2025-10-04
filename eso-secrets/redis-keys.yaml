@@ -1,0 +1,24 @@
+apiVersion: external-secrets.io/v1
+kind: ClusterExternalSecret
+metadata:
+  name: redis-secret
+spec:
+  externalSecretName: redis-secret
+  refreshTime: "1m"
+  namespaceSelectors:
+  - matchLabels:
+      "kubernetes.io/metadata.name": "redis"
+  - matchLabels:
+      "kubernetes.io/metadata.name": "monospaced"
+  externalSecretSpec:
+    secretStoreRef:
+      name: vault-backend
+      kind: ClusterSecretStore
+    refreshPolicy: Periodic
+    refreshInterval: 1m
+    target:
+      name: redis-secret
+      creationPolicy: Owner
+    dataFrom:
+    - extract:
+        key: monospaced/redis
