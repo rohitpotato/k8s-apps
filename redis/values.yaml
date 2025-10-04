@@ -1,0 +1,17 @@
+architecture: standalone
+auth:
+  enabled: true
+  existingSecret: redis-secret
+  existingSecretPasswordKey: redis_password
+
+master:
+  persistence:
+    enabled: true
+    size: 1Gi
+  resources:
+    requests:
+      memory: 128Mi
+      cpu: 100m
+    limits:
+      memory: 256Mi
+      cpu: 500m

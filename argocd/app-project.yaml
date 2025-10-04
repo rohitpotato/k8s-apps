@@ -31,6 +31,8 @@ spec:
       server: https://kubernetes.default.svc
     - namespace: linkerd
       server: https://kubernetes.default.svc
+    - namespace: redis
+      server: https://kubernetes.default.svc
   clusterResourceWhitelist:
     - group: '*'      # All API groups
       kind: '*'       # All kinds
