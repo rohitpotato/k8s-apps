@@ -47,11 +47,11 @@ grafana:
       hosts:
       - grafana.rohitpotato.xyz
   additionalDataSources:
-    - name: loki
-      type: loki
-      access: proxy
-      url: http://loki.monitoring.svc.cluster.local:3100
-      isDefault: false
+    # - name: loki
+    #   type: loki
+    #   access: proxy
+    #   url: http://loki.monitoring.svc.cluster.local:3100
+    #   isDefault: false
     - name: monitor_boi
       type: postgres
       access: proxy
