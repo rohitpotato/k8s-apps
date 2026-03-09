@@ -42,7 +42,7 @@ spec:
         - name: DATABASE_TYPE
           value: postgresql
         - name: SKIP_DB_MIGRATION
-          value: 1
+          value: "1"
         resources:
           requests:
             memory: "200Mi"
