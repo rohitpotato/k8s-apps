@@ -29,7 +29,7 @@ spec:
               topologyKey: kubernetes.io/hostname
       containers:
       - name: unami-analytics
-        image: docker.umami.is/umami-software/umami:postgresql-latest
+        image: docker.umami.is/umami-software/umami:postgresql-v2.19.0
         ports:
         - containerPort: 3000
           name: unami
