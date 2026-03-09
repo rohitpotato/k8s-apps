@@ -11,5 +11,8 @@ kind: ConfigMap
 metadata:
   namespace: argocd
   name: argocd-cm
+  labels:
+    app.kubernetes.io/name: argocd-cm
+    app.kubernetes.io/part-of: argocd
 data:
   exec.enabled: "true"
