@@ -31,22 +31,22 @@ spec:
         - name: monospaced-frontend
           image: ghcr.io/rohitpotato/monospaced-stack/frontend:main-d8ab3d9
           imagePullPolicy: Always
-          env:
-            - name: NODE_OPTIONS
-              value: "--max-old-space-size=256"
-            - name: NEXT_TELEMETRY_DISABLED
-              value: "1"
+          # env:
+          #   - name: NODE_OPTIONS
+          #     value: "--max-old-space-size=256"
+          #   - name: NEXT_TELEMETRY_DISABLED
+          #     value: "1"
           ports:
             - containerPort: 3000
           readinessProbe:
             httpGet:
-              path: /api/_health
+              path: /
               port: 3000
             initialDelaySeconds: 10
             periodSeconds: 10
           livenessProbe:
             httpGet:
-              path: /api/_health
+              path: /
               port: 3000
             initialDelaySeconds: 10
             periodSeconds: 10
