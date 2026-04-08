@@ -1,19 +1,25 @@
-apiVersion: traefik.io/v1alpha1
-kind: IngressRoute
+apiVersion: networking.k8s.io/v1
+kind: Ingress
 metadata:
-  name: monospaced-frontend
+  name: monospaced-frontend-ingress
   namespace: monospaced
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-production
+    traefik.ingress.kubernetes.io/router.middlewares: default-redirect-https@kubernetescrd
 spec:
-  entryPoints:
-    - websecure
-  routes:
-    - match: Host(`rohitpotato.xyz`) && PathPrefix(`/`)
-      kind: Rule
-      middlewares:
-        - name: redirect-https
-          namespace: default
-      services:
-        - name: monospaced-frontend-traefik-service
-          kind: TraefikService
+  ingressClassName: traefik
+  rules:
+    - host: rohitpotato.xyz
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: monospaced-frontend-traefik-service
+                port:
+                  number: 3000
   tls:
-    secretName: rohitpotato-xyz-tls
+    - hosts:
+        - rohitpotato.xyz
+      secretName: rohitpotato-xyz-tls
