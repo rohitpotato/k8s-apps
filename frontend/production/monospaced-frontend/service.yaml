@@ -1,13 +1,39 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: monospaced-frontend
+  name: monospaced-frontend-stable
   namespace: monospaced
 spec:
   selector:
-    app: monospaced-frontend  
+    app: monospaced-frontend
   ports:
     - name: http
       port: 3000
       targetPort: 3000
   type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: monospaced-frontend-canary
+  namespace: monospaced
+spec:
+  selector:
+    app: monospaced-frontend
+  ports:
+    - name: http
+      port: 3000
+      targetPort: 3000
+  type: ClusterIP
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: TraefikService
+metadata:
+  name: monospaced-frontend-traefik-service
+spec:
+  weighted:
+    services:
+      - name: monospaced-frontend-stable 
+        port: 3000
+      - name: monospaced-frontend-canary
+        port: 3000

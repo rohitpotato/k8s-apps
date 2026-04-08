@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AnalysisTemplate
+metadata:
+  name: monospaced-frontend-analysis-template
+spec:
+  args:
+  - name: base_url
+    value: monospaced-backend.monospaced.svc.cluster.local:5001
+  metrics:
+  - name: success-rate
+    interval: 30s
+    count: 3
+    successCondition: result === 'true'
+    failureLimit: 1
+    provider:
+      web:
+        url: "{{ args.base_url }}/health"
+        jsonPath: "{$.ok}"

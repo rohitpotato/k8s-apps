@@ -16,7 +16,7 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: monospaced-frontend
+                name: monospaced-frontend-stable
                 port:
                   number: 3000
   tls:

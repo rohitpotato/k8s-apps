@@ -1,10 +1,10 @@
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
 metadata:
   name: monospaced-frontend
   namespace: monospaced
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: monospaced-frontend
@@ -52,3 +52,33 @@ spec:
             limits:
               memory: "100Mi"
               cpu: "60m"
+  strategy:
+    canary:
+      analysis:
+        templates:
+        - templateName: monospaced-frontend-analysis-template
+      canaryService: monospaced-frontend-canary
+      stableService: monospaced-frontend-stable
+      trafficRouting:
+        traefik:
+          weightedTraefikServiceName: monospaced-frontend-traefik-service
+      dynamicStableScale: true
+      steps:
+      - setWeight: 10
+      - pause:
+          duration: 30
+      - setWeight: 30
+      - pause:
+          duration: 30
+      - setWeight: 50
+      - pause:
+          duration: 30
+      - setWeight: 70
+      - pause:
+          duration: 30
+      - setWeight: 90
+      - pause:
+          duration: 30
+      - setWeight: 99
+      - pause: {}
+      - setWeight: 100
