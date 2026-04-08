@@ -1,0 +1,12 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: rohitpotato-xyz-tls
+  namespace: monospaced
+spec:
+  secretName: rohitpotato-xyz-tls
+  issuerRef:
+    name: letsencrypt-production
+    kind: ClusterIssuer
+  dnsNames:
+    - rohitpotato.xyz
