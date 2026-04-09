@@ -25,16 +25,3 @@ spec:
       port: 3000
       targetPort: 3000
   type: ClusterIP
----
-apiVersion: traefik.io/v1alpha1
-kind: TraefikService
-metadata:
-  name: monospaced-frontend-traefik-service
-  namespace: monospaced
-spec:
-  weighted:
-    services:
-      - name: monospaced-frontend-stable 
-        port: 3000
-      - name: monospaced-frontend-canary
-        port: 3000

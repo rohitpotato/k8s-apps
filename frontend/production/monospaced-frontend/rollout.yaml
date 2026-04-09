@@ -60,8 +60,10 @@ spec:
       canaryService: monospaced-frontend-canary
       stableService: monospaced-frontend-stable
       trafficRouting:
-        traefik:
-          weightedTraefikServiceName: monospaced-frontend-traefik-service
+        plugins:
+          argoproj-labs/gatewayAPI:
+            httpRoute: monospaced-frontend
+            namespace: monospaced
       dynamicStableScale: true
       steps:
       - setWeight: 10

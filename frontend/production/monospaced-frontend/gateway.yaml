@@ -1,0 +1,20 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: web-gateway
+  namespace: monospaced
+spec:
+  gatewayClassName: traefik
+  listeners:
+    - name: https
+      protocol: HTTPS
+      port: 443
+      hostname: rohitpotato.xyz
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - kind: Secret
+            name: rohitpotato-xyz-tls
+      allowedRoutes:
+        namespaces:
+          from: Same
