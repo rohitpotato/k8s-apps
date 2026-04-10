@@ -9,7 +9,4 @@ spec:
       kubernetesGateway:
         enabled: true
     gateway:
-      listeners:
-        websecure:
-          protocol: HTTPS
-          port: 8443
+      enabled: false
