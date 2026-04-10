@@ -14,6 +14,7 @@ spec:
     - https://helm.linkerd.io/stable
     - https://charts.bitnami.com/bitnami
     - oci://quay.io/jetstack/charts/cert-manager
+    - https://github.com/argoproj/argo-helm.git
   destinations:
     - namespace: monospaced
       server: https://kubernetes.default.svc
