@@ -1,0 +1,27 @@
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: AlertmanagerConfig
+metadata:
+  name: frontend-alert-routing
+  namespace: monospaced
+  labels:
+    alertmanagerConfig: frontend
+spec:
+  route:
+    receiver: slack-notifications
+    groupBy: ["alertname", "service", "severity"]
+    groupWait: 30s
+    groupInterval: 5m
+    repeatInterval: 4h
+    matchers:
+      - name: team
+        value: monospaced
+      - name: severity
+        value: critical
+        matchType: "="
+
+  receivers:
+    - name: slack-notifications
+      webhookConfigs:
+        - urlSecret:
+            name: slack-webhook
+            key: webhook_url

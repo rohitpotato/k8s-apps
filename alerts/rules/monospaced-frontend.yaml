@@ -1,0 +1,18 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: monospaced-frontend-alerts
+  namespace: monospaced
+spec:
+  groups:
+    - name: monospaced-frontend-alerts
+      rules:
+        - alert: MonospacedFrontendHighMemoryUsage
+          expr: sum(container_memory_working_set_bytes{namespace="monospaced", pod=~"monospaced-frontend-.*"}) by (pod) > 80 * 1024 * 1024
+          for: 1m
+          labels:
+            severity: critical
+            team: monospaced
+            service: monospaced-frontend
+          annotations:
+            summary: "Monospaced Frontend is using high memory"

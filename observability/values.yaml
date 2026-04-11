@@ -114,7 +114,8 @@ kubeProxy:
 # Resource limits for Prometheus stack components
 prometheus:
   prometheusSpec:
-    # Ensure Prometheus runs on worker nodes with anti-affinity
+    ruleSelector: {}
+    ruleNamespaceSelector: {}
     nodeSelector:
       nodeRole: worker
     affinity:
@@ -139,6 +140,8 @@ prometheus:
 
 alertmanager:
   alertmanagerSpec:
+    alertmanagerConfigSelector: {}
+    alertmanagerConfigNamespaceSelector: {}
     # Ensure AlertManager runs on worker nodes with anti-affinity
     nodeSelector:
       nodeRole: worker
