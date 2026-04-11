@@ -5,6 +5,7 @@ metadata:
   namespace: monospaced
   labels:
     alertmanagerConfig: frontend
+    release: kube-prometheus-stack
 spec:
   route:
     receiver: slack-notifications
