@@ -13,6 +13,7 @@ spec:
     path: alerts/configs
   destination:
     server: https://kubernetes.default.svc
+    namespace: default
   syncPolicy:
     automated:
       selfHeal: true
