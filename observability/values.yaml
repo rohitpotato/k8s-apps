@@ -139,6 +139,21 @@ prometheus:
         cpu: "400m"
 
 alertmanager:
+  ingress:
+    enabled: true
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt-production
+      kubernetes.io/ingress.class: traefik
+      traefik.ingress.kubernetes.io/router.middlewares: default-redirect-https@kubernetescrd
+    hosts:
+      - alert-manager.rohitpotato.xyz
+    paths:
+      - /
+    pathType: Prefix
+    tls:
+    - secretName: alertmanager-tls
+      hosts:
+      - alertmanager.rohitpotato.xyz
   alertmanagerSpec:
     alertmanagerConfigSelector: {}
     alertmanagerConfigNamespaceSelector: {}
