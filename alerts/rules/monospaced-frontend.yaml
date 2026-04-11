@@ -3,6 +3,8 @@ kind: PrometheusRule
 metadata:
   name: monospaced-frontend-alerts
   namespace: monospaced
+  labels:
+      release: kube-prometheus-stack
 spec:
   groups:
     - name: monospaced-frontend-alerts
