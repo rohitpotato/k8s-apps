@@ -157,6 +157,8 @@ alertmanager:
   alertmanagerSpec:
     alertmanagerConfigSelector: {}
     alertmanagerConfigNamespaceSelector: {}
+    alertmanagerConfigMatcherStrategy:
+      type: None
     # Ensure AlertManager runs on worker nodes with anti-affinity
     nodeSelector:
       nodeRole: worker
