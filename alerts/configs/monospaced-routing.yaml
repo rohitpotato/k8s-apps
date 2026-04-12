@@ -21,7 +21,17 @@ spec:
 
   receivers:
     - name: slack-notifications
-      webhookConfigs:
-        - urlSecret:
+      slackConfigs:
+        - apiURL:
             name: slack-webhook
             key: webhook_url
+          channel: '#alerts'
+          sendResolved: true
+          title: '{{ .Status | toUpper }}: {{ .CommonLabels.alertname }}'
+          text: >-
+            {{ range .Alerts }}
+            *Alert:* {{ .Labels.alertname }}
+            *Severity:* {{ .Labels.severity }}
+            *Service:* {{ .Labels.service }}
+            *Description:* {{ .Annotations.summary }}
+            {{ end }}
