@@ -62,7 +62,7 @@ spec:
               memory: "100Mi"
               cpu: "60m"
         - name: nginxlog-exporter
-          image: quay.io/martinhelmich/prometheus-nginxlog-exporter:1.11.0
+          image: docker.pkg.github.com/martin-helmich/prometheus-nginxlog-exporter/exporter:v1
           args:
             - -config-file
             - /etc/prometheus-nginxlog-exporter/config.hcl
