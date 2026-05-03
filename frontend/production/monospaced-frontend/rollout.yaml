@@ -13,6 +13,12 @@ spec:
       labels:
         app: monospaced-frontend
     spec:
+      volumes:
+      - name: nginx-logs
+        emptyDir: {}
+      - name: exporter-config
+        configMap:
+          name: nginx-exporter-config
       nodeSelector:
         nodeRole: worker
       affinity:
@@ -31,6 +37,9 @@ spec:
         - name: monospaced-frontend
           image: ghcr.io/rohitpotato/monospaced-stack/frontend:main-f0385ba
           imagePullPolicy: Always
+          volumeMounts:
+          - name: nginx-logs
+            mountPath: /var/log/nginx
           ports:
             - containerPort: 3000
           readinessProbe:
@@ -52,6 +61,20 @@ spec:
             limits:
               memory: "100Mi"
               cpu: "60m"
+        - name: nginxlog-exporter
+          image: quay.io/martinhelmich/prometheus-nginxlog-exporter:1.11.0
+          args:
+            - -config-file
+            - /etc/prometheus-nginxlog-exporter/config.hcl
+          ports:
+            - name: metrics
+              containerPort: 4040
+          volumeMounts:
+            - name: exporter-config
+              mountPath: /etc/prometheus-nginxlog-exporter
+            - name: nginx-logs
+              mountPath: /var/log/nginx
+              readOnly: true
   strategy:
     canary:
       analysis:

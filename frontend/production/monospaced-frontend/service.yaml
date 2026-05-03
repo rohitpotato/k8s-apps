@@ -3,6 +3,8 @@ kind: Service
 metadata:
   name: monospaced-frontend-stable
   namespace: monospaced
+  labels:
+    app: monospaced-frontend
 spec:
   selector:
     app: monospaced-frontend
@@ -10,6 +12,9 @@ spec:
     - name: http
       port: 3000
       targetPort: 3000
+    - name: metrics
+      port: 4040
+      targetPort: 4040
   type: ClusterIP
 ---
 apiVersion: v1
@@ -17,6 +22,8 @@ kind: Service
 metadata:
   name: monospaced-frontend-canary
   namespace: monospaced
+  labels:
+    app: monospaced-frontend
 spec:
   selector:
     app: monospaced-frontend
@@ -24,4 +31,7 @@ spec:
     - name: http
       port: 3000
       targetPort: 3000
+    - name: metrics
+      port: 4040
+      targetPort: 4040
   type: ClusterIP
