@@ -2,10 +2,11 @@ apiVersion: argoproj.io/v1alpha1
 kind: AnalysisTemplate
 metadata:
   name: monospaced-frontend-analysis-template
+  namespace: monospaced
 spec:
   args:
   - name: base_url
-    value: monospaced-backend.monospaced.svc.cluster.local:5001
+    value: http://monospaced-backend.monospaced.svc.cluster.local:5001
   metrics:
   - name: success-rate
     interval: 30s
