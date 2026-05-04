@@ -62,7 +62,7 @@ spec:
               memory: "100Mi"
               cpu: "60m"
         - name: nginxlog-exporter
-          image: quay.io/martinhelmich/prometheus-nginxlog-exporter:v1.11.0
+          image: ghcr.io/rohitpotato/monospaced-stack/frontend:main-017b01f
           args: ["-config-file", "/etc/prometheus-nginxlog-exporter/config.hcl"]
           ports:
             - name: metrics
