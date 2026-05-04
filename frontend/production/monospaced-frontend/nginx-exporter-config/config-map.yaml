@@ -15,5 +15,25 @@ data:
         files = ["/var/log/nginx/exporter-access.log"]
       }
 
-      format = "{\"host\":\"$host\",\"method\":\"$request_method\",\"uri\":\"$uri\",\"status\":$status,\"request_time\":$request_time,\"bytes_sent\":$bytes_sent,\"request_length\":$request_length}"
+      format = "json"
+
+      labels {
+        app = "monospaced-frontend"
+      }
+
+      relabel "host" {
+        from = "host"
+      }
+
+      relabel "method" {
+        from = "method"
+      }
+
+      # Be careful: raw uri can be high-cardinality.
+      # For your static site, this is acceptable initially.
+      relabel "uri" {
+        from = "uri"
+      }
+
+      histogram_buckets = [0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1, 2.5, 5, 10]
     }
