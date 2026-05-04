@@ -11,7 +11,7 @@ spec:
   - name: success-rate
     interval: 30s
     count: 3
-    successCondition: result === 'true'
+    successCondition: result == "Health check endpoint success."
     failureLimit: 1
     provider:
       web:
