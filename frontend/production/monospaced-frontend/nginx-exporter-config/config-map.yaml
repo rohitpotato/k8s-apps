@@ -12,7 +12,7 @@ data:
 
     namespace "nginx" {
       source = {
-        files = ["/var/log/nginx/access.log"]
+        files = ["/var/log/nginx/exporter-access.log"]
       }
 
       format = "json"
