@@ -11,11 +11,10 @@ data:
     }
 
     namespace "nginx" {
-      source = {
+      source {
         files = ["/var/log/nginx/exporter-access.log"]
       }
-
-      format = "json"
+      parser = "json"
 
       labels {
         app = "monospaced-frontend"
