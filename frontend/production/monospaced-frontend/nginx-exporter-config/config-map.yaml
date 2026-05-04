@@ -15,5 +15,5 @@ data:
         files = ["/var/log/nginx/exporter-access.log"]
       }
 
-      format = "json"
+      format = "{\"host\":\"$host\",\"method\":\"$request_method\",\"uri\":\"$uri\",\"status\":$status,\"request_time\":$request_time,\"bytes_sent\":$bytes_sent,\"request_length\":$request_length}"
     }
