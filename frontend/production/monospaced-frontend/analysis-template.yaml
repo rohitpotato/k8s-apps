@@ -16,4 +16,4 @@ spec:
     provider:
       web:
         url: "{{ args.base_url }}/health"
-        jsonPath: "{$.ok}"
+        jsonPath: "{$.message}"
