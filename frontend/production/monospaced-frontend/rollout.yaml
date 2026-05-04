@@ -35,7 +35,7 @@ spec:
               topologyKey: kubernetes.io/hostname
       containers:
         - name: monospaced-frontend
-          image: ghcr.io/rohitpotato/monospaced-stack/frontend:main-f0385ba
+          image: ghcr.io/rohitpotato/monospaced-stack/frontend:main-88fff9d
           imagePullPolicy: Always
           volumeMounts:
           - name: nginx-logs
@@ -62,7 +62,7 @@ spec:
               memory: "100Mi"
               cpu: "60m"
         - name: nginxlog-exporter
-          image: quay.io/martinhelmich/prometheus-nginxlog-exporter:v1.11.0
+          image: ghcr.io/rohitpotato/monospaced-stack/frontend:main-88fff9d
           args:
             - -config-file
             - /etc/prometheus-nginxlog-exporter/config.hcl
