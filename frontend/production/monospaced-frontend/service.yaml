@@ -22,8 +22,6 @@ kind: Service
 metadata:
   name: monospaced-frontend-canary
   namespace: monospaced
-  labels:
-    app: monospaced-frontend
 spec:
   selector:
     app: monospaced-frontend
