@@ -310,7 +310,7 @@ data:
           "targets": [
             {
               "editorMode": "code",
-              "expr": "sum(rate(nginx_http_response_time_seconds_sum[$__rate_interval]))\n/\nsum(rate(nginx_http_response_time_seconds_count[$__rate_interval]))",
+              "expr": "sum(rate(nginx_http_response_time_seconds_sum{job=\"$job\"}[$__rate_interval]))\n/\nsum(rate(nginx_http_response_time_seconds_count{job=\"$job\"}[$__rate_interval]))",
               "legendFormat": "Average Latency",
               "range": true,
               "refId": "A"
@@ -376,7 +376,7 @@ data:
           "targets": [
             {
               "editorMode": "code",
-              "expr": "sum(rate(nginx_parse_errors_total[$__rate_interval]))",
+              "expr": "sum(rate(nginx_parse_errors_total{job=\"$job\"}[$__rate_interval]))",
               "legendFormat": "Parse Error Rate",
               "range": true,
               "refId": "A"
@@ -485,7 +485,7 @@ data:
           "targets": [
             {
               "editorMode": "code",
-              "expr": "sum(rate(nginx_http_response_count_total[$__rate_interval]))",
+              "expr": "sum(rate(nginx_http_response_count_total{job=\"$job\"}[$__rate_interval]))",
               "legendFormat": "RPS",
               "range": true,
               "refId": "A"
@@ -582,7 +582,7 @@ data:
           "targets": [
             {
               "editorMode": "code",
-              "expr": "sum by (method) (rate(nginx_http_response_count_total[$__rate_interval]))",
+              "expr": "sum by (method) (rate(nginx_http_response_count_total{job=\"$job\"}[$__rate_interval]))",
               "legendFormat": "{{ method }}",
               "range": true,
               "refId": "A"
@@ -679,7 +679,7 @@ data:
           "targets": [
             {
               "editorMode": "code",
-              "expr": "sum by (status) (rate(nginx_http_response_count_total[$__rate_interval]))",
+              "expr": "sum by (status) (rate(nginx_http_response_count_total{job=\"$job\"}[$__rate_interval]))",
               "legendFormat": "__auto",
               "range": true,
               "refId": "A"
@@ -820,7 +820,7 @@ data:
           "targets": [
             {
               "editorMode": "code",
-              "expr": "sum by (status) (rate(nginx_http_response_count_total[$__rate_interval]))",
+              "expr": "sum by (status) (rate(nginx_http_response_count_total{job=\"$job\"}[$__rate_interval]))",
               "legendFormat": "__auto",
               "range": true,
               "refId": "A"
@@ -955,7 +955,7 @@ data:
           "targets": [
             {
               "editorMode": "code",
-              "expr": "histogram_quantile(\n  0.50,\n  sum by (le) (\n    rate(nginx_http_response_time_seconds_hist_bucket[$__rate_interval])\n  )\n)",
+              "expr": "histogram_quantile(\n  0.50,\n  sum by (le) (\n    rate(nginx_http_response_time_seconds_hist_bucket{job=\"$job\"}[$__rate_interval])\n  )\n)",
               "legendFormat": "p50 Latency",
               "range": true,
               "refId": "A"
@@ -966,7 +966,7 @@ data:
                 "uid": "prometheus"
               },
               "editorMode": "code",
-              "expr": "histogram_quantile(\n  0.90,\n  sum by (le) (\n    rate(nginx_http_response_time_seconds_hist_bucket[$__rate_interval])\n  )\n)",
+              "expr": "histogram_quantile(\n  0.90,\n  sum by (le) (\n    rate(nginx_http_response_time_seconds_hist_bucket{job=\"$job\"}[$__rate_interval])\n  )\n)",
               "hide": false,
               "instant": false,
               "legendFormat": "p90 Latency",
@@ -979,7 +979,7 @@ data:
                 "uid": "prometheus"
               },
               "editorMode": "code",
-              "expr": "histogram_quantile(\n  0.95,\n  sum by (le) (\n    rate(nginx_http_response_time_seconds_hist_bucket[$__rate_interval])\n  )\n)",
+              "expr": "histogram_quantile(\n  0.95,\n  sum by (le) (\n    rate(nginx_http_response_time_seconds_hist_bucket{job=\"$job\"}[$__rate_interval])\n  )\n)",
               "hide": false,
               "instant": false,
               "legendFormat": "p95 Latency",
@@ -992,7 +992,7 @@ data:
                 "uid": "prometheus"
               },
               "editorMode": "code",
-              "expr": "histogram_quantile(\n  0.99,\n  sum by (le) (\n    rate(nginx_http_response_time_seconds_hist_bucket[$__rate_interval])\n  )\n)",
+              "expr": "histogram_quantile(\n  0.99,\n  sum by (le) (\n    rate(nginx_http_response_time_seconds_hist_bucket{job=\"$job\"}[$__rate_interval])\n  )\n)",
               "hide": false,
               "instant": false,
               "legendFormat": "p99 Latency",
@@ -1070,7 +1070,7 @@ data:
           "targets": [
             {
               "editorMode": "code",
-              "expr": "sum by (le) (\n  rate(nginx_http_response_time_seconds_hist_bucket[$__rate_interval])\n)",
+              "expr": "sum by (le) (\n  rate(nginx_http_response_time_seconds_hist_bucket{job=\"$job\"}[$__rate_interval])\n)",
               "legendFormat": "{{le}}",
               "range": true,
               "refId": "A"
@@ -1168,7 +1168,7 @@ data:
           "targets": [
             {
               "editorMode": "code",
-              "expr": "sum(rate(nginx_http_response_time_seconds_sum[$__rate_interval]))\n/\nsum(rate(nginx_http_response_time_seconds_count[$__rate_interval]))",
+              "expr": "sum(rate(nginx_http_response_time_seconds_sum{job=\"$job\"}[$__rate_interval]))\n/\nsum(rate(nginx_http_response_time_seconds_count{job=\"$job\"}[$__rate_interval]))",
               "legendFormat": "Average Latency",
               "range": true,
               "refId": "A"
@@ -1276,7 +1276,7 @@ data:
           "targets": [
             {
               "editorMode": "code",
-              "expr": "sum by (uri) (rate(nginx_http_response_count_total{status=~\"5..\"}[$__rate_interval]))",
+              "expr": "sum by (uri) (rate(nginx_http_response_count_total{status=~\"5..\", job=\"$job\"}[$__rate_interval]))",
               "legendFormat": "5xx",
               "range": true,
               "refId": "A"
@@ -1371,7 +1371,7 @@ data:
           "targets": [
             {
               "editorMode": "code",
-              "expr": "sum by (uri)(rate(nginx_http_response_count_total{status=~\"4..\"}[$__rate_interval]))",
+              "expr": "sum by (uri)(rate(nginx_http_response_count_total{status=~\"4..\", job=\"$job\"}[$__rate_interval]))",
               "legendFormat": "{{uri}}",
               "range": true,
               "refId": "A"
@@ -1443,7 +1443,7 @@ data:
           "targets": [
             {
               "editorMode": "code",
-              "expr": "topk(10,\n  sum by (status) (\n    rate(nginx_http_response_count_total{status=~\"5..\"}[$__rate_interval])\n  )\n)",
+              "expr": "topk(10,\n  sum by (status) (\n    rate(nginx_http_response_count_total{status=~\"5..\", job=\"$job\"}[$__rate_interval])\n  )\n)",
               "legendFormat": "__auto",
               "range": true,
               "refId": "A"
@@ -1560,7 +1560,7 @@ data:
                 "uid": "prometheus"
               },
               "editorMode": "code",
-              "expr": "(\n  sum(rate(nginx_http_response_count_total{status=~\"4..\"}[$__rate_interval]))\n  /\n  sum(rate(nginx_http_response_count_total[$__rate_interval]))\n) * 100",
+              "expr": "(\n  sum(rate(nginx_http_response_count_total{status=~\"4..\", job=\"$job\"}[$__rate_interval]))\n  /\n  sum(rate(nginx_http_response_count_total{job=\"$job\"}[$__rate_interval]))\n) * 100",
               "hide": false,
               "instant": false,
               "legendFormat": "4xx error rate",
@@ -1573,7 +1573,7 @@ data:
                 "uid": "prometheus"
               },
               "editorMode": "code",
-              "expr": "(\n  sum(rate(nginx_http_response_count_total{status=~\"5..\"}[5m]))\n  /\n  sum(rate(nginx_http_response_count_total[5m]))\n) * 100",
+              "expr": "(\n  sum(rate(nginx_http_response_count_total{status=~\"5..\",job=\"$job\"}[5m]))\n  /\n  sum(rate(nginx_http_response_count_total{job=\"$job\"}[5m]))\n) * 100",
               "hide": false,
               "instant": false,
               "legendFormat": "5xx error rate",
@@ -1665,7 +1665,7 @@ data:
             {
               "editorMode": "code",
               "exemplar": false,
-              "expr": "topk(10,\n  sum by (uri) (\n    rate(nginx_http_response_count_total[$__rate_interval])\n  )\n)",
+              "expr": "topk(10,\n  sum by (uri) (\n    rate(nginx_http_response_count_total{job=\"$job\"}[$__rate_interval])\n  )\n)",
               "instant": true,
               "legendFormat": "{{uri}}",
               "range": false,
@@ -1745,7 +1745,7 @@ data:
             {
               "editorMode": "code",
               "exemplar": false,
-              "expr": "topk(10,\n  histogram_quantile(\n    0.95,\n    sum by (le, uri) (\n      rate(nginx_http_response_time_seconds_hist_bucket[$__rate_interval])\n    )\n  )\n)",
+              "expr": "topk(10,\n  histogram_quantile(\n    0.95,\n    sum by (le, uri) (\n      rate(nginx_http_response_time_seconds_hist_bucket{job=\"$job\"}[$__rate_interval])\n    )\n  )\n)",
               "instant": true,
               "legendFormat": "{{uri}}",
               "range": false,
@@ -1820,7 +1820,7 @@ data:
           "targets": [
             {
               "editorMode": "code",
-              "expr": "topk(10,\n  sum by (uri) (\n    rate(nginx_http_response_count_total{status=~\"4..\"}[$__rate_interval])\n  )\n)",
+              "expr": "topk(10,\n  sum by (uri) (\n    rate(nginx_http_response_count_total{status=~\"4..\",job=\"$job\"}[$__rate_interval])\n  )\n)",
               "legendFormat": "{{uri}}",
               "range": true,
               "refId": "A"
@@ -1899,7 +1899,7 @@ data:
             {
               "editorMode": "code",
               "exemplar": false,
-              "expr": "topk(10,\n  sum by (uri) (\n    rate(nginx_http_response_count_total{status=~\"5..\"}[$__rate_interval])\n  )\n)",
+              "expr": "topk(10,\n  sum by (uri) (\n    rate(nginx_http_response_count_total{status=~\"5..\",job=\"$job\"}[$__rate_interval])\n  )\n)",
               "instant": true,
               "legendFormat": "__auto",
               "range": false,
@@ -1978,7 +1978,7 @@ data:
             {
               "editorMode": "code",
               "exemplar": false,
-              "expr": "topk(10,\n  sum by (uri) (\n    rate(nginx_http_response_count_total{status=\"404\"}[$__rate_interval])\n  )\n)",
+              "expr": "topk(10,\n  sum by (uri) (\n    rate(nginx_http_response_count_total{status=\"404\",job=\"$job\"}[$__rate_interval])\n  )\n)",
               "instant": true,
               "legendFormat": "{{uri}}",
               "range": false,
@@ -2062,7 +2062,7 @@ data:
             {
               "editorMode": "code",
               "exemplar": false,
-              "expr": "topk(10,\n  100 *\n  sum by (uri) (\n    rate(nginx_http_response_count_total[5m])\n  )\n  /\n  on() group_left\n  sum(rate(nginx_http_response_count_total[5m]))\n)",
+              "expr": "topk(10,\n  100 *\n  sum by (uri) (\n    rate(nginx_http_response_count_total{job=\"$job\"}[5m])\n  )\n  /\n  on() group_left\n  sum(rate(nginx_http_response_count_total{job=\"$job\"}[5m]))\n)",
               "instant": true,
               "legendFormat": "{{uri}}",
               "range": false,
@@ -2137,7 +2137,7 @@ data:
             {
               "editorMode": "code",
               "exemplar": false,
-              "expr": "topk(50,\n  sum by (uri, status) (\n    increase(nginx_http_response_count_total[$__range])\n  )\n)",
+              "expr": "topk(50,\n  sum by (uri, status) (\n    increase(nginx_http_response_count_total{job=\"$job\"}[$__range])\n  )\n)",
               "format": "table",
               "instant": true,
               "legendFormat": "{{uri}}",
@@ -2246,7 +2246,7 @@ data:
             {
               "editorMode": "code",
               "exemplar": false,
-              "expr": "topk(50,\n  histogram_quantile(\n    0.95,\n    sum by (le, uri, status) (\n      rate(nginx_http_response_time_seconds_hist_bucket[$__rate_interval])\n    )\n  )\n)",
+              "expr": "topk(50,\n  histogram_quantile(\n    0.95,\n    sum by (le, uri, status) (\n      rate(nginx_http_response_time_seconds_hist_bucket{job=\"$job\"}[$__rate_interval])\n    )\n  )\n)",
               "format": "table",
               "instant": true,
               "interval": "",
@@ -2350,7 +2350,7 @@ data:
             {
               "editorMode": "code",
               "exemplar": false,
-              "expr": "topk(10,\n  100 *\n  (\n    sum by (uri) (\n      rate(nginx_http_response_count_total{status=~\"4..\"}[$__rate_interval])\n    )\n    OR\n    sum by (uri) (\n      rate(nginx_http_response_count_total[$__rate_interval])\n    ) * 0\n  )\n  /\n  clamp_min(\n    sum by (uri) (\n      rate(nginx_http_response_count_total[$__rate_interval])\n    ),\n    1e-9\n  )\n)",
+              "expr": "topk(10,\n  100 *\n  (\n    sum by (uri) (\n      rate(nginx_http_response_count_total{status=~\"4..\",job=\"$job\"}[$__rate_interval])\n    )\n    OR\n    sum by (uri) (\n      rate(nginx_http_response_count_total{job=\"$job\"}[$__rate_interval])\n    ) * 0\n  )\n  /\n  clamp_min(\n    sum by (uri) (\n      rate(nginx_http_response_count_total{job=\"$job\"}[$__rate_interval])\n    ),\n    1e-9\n  )\n)",
               "instant": true,
               "legendFormat": "{{uri}}",
               "range": false,
@@ -2427,7 +2427,7 @@ data:
             {
               "editorMode": "code",
               "exemplar": false,
-              "expr": "topk(10,\n  100 *\n  (\n    sum by (uri) (\n      rate(nginx_http_response_count_total{status=~\"5..\"}[$__rate_interval])\n    )\n    OR\n    sum by (uri) (\n      rate(nginx_http_response_count_total[$__rate_interval])\n    ) * 0\n  )\n  /\n  clamp_min(\n    sum by (uri) (\n      rate(nginx_http_response_count_total[$__rate_interval])\n    ),\n    1e-9\n  )\n)",
+              "expr": "topk(10,\n  100 *\n  (\n    sum by (uri) (\n      rate(nginx_http_response_count_total{status=~\"5..\",job=\"$job\"}[$__rate_interval])\n    )\n    OR\n    sum by (uri) (\n      rate(nginx_http_response_count_total{job=\"$job\"}[$__rate_interval])\n    ) * 0\n  )\n  /\n  clamp_min(\n    sum by (uri) (\n      rate(nginx_http_response_count_total{job=\"$job\"}[$__rate_interval])\n    ),\n    1e-9\n  )\n)",
               "format": "time_series",
               "instant": true,
               "interval": "",
@@ -2509,7 +2509,7 @@ data:
             {
               "editorMode": "code",
               "exemplar": false,
-              "expr": "avg(nginx_http_request_size_bytes)",
+              "expr": "avg(nginx_http_request_size_bytes{job=\"$job\"})",
               "format": "time_series",
               "instant": true,
               "legendFormat": "Average Request Size",
@@ -2603,7 +2603,7 @@ data:
             {
               "editorMode": "code",
               "exemplar": false,
-              "expr": "topk(10,\n  avg by (uri) (\n    nginx_http_request_size_bytes\n  )\n)",
+              "expr": "topk(10,\n  avg by (uri) (\n    nginx_http_request_size_bytes{job=\"$job\"}\n  )\n)",
               "format": "time_series",
               "instant": true,
               "legendFormat": "{{uri}}",
@@ -2671,7 +2671,7 @@ data:
             {
               "editorMode": "code",
               "exemplar": false,
-              "expr": "sum(rate(nginx_parse_errors_total[$__rate_interval]))",
+              "expr": "sum(rate(nginx_parse_errors_total{job=\"$job\"}[$__rate_interval]))",
               "format": "time_series",
               "instant": false,
               "legendFormat": "{{uri}}",
@@ -2738,7 +2738,7 @@ data:
             {
               "editorMode": "code",
               "exemplar": false,
-              "expr": "sum(increase(nginx_parse_errors_total[$__range]))",
+              "expr": "sum(increase(nginx_parse_errors_total{job=\"$job\"}[$__range]))",
               "format": "time_series",
               "instant": true,
               "interval": "",
@@ -2833,7 +2833,7 @@ data:
             {
               "editorMode": "code",
               "exemplar": false,
-              "expr": "sum by (instance) (\n  rate(nginx_parse_errors_total[$__rate_interval])\n)",
+              "expr": "sum by (instance) (\n  rate(nginx_parse_errors_total{job=\"$job\"}[$__rate_interval])\n)",
               "format": "time_series",
               "instant": true,
               "legendFormat": "{{instance}}",
@@ -2885,5 +2885,5 @@ data:
       "timezone": "browser",
       "title": "Nginx Log Exporter Dashboard",
       "uid": "c2a78c35-e158-436f-a871-74095e6d4f22",
-      "version": 109
+      "version": 110
     }
