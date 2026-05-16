@@ -10,7 +10,7 @@ spec:
   listeners:
     - name: https-root
       protocol: HTTPS
-      port: 443
+      port: 8443
       hostname: rohitpotato.xyz
       tls:
         mode: Terminate
@@ -22,7 +22,7 @@ spec:
           from: Same
     - name: https-www
       protocol: HTTPS
-      port: 443
+      port: 8443
       hostname: www.rohitpotato.xyz
       tls:
         mode: Terminate
