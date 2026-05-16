@@ -8,6 +8,7 @@ spec:
     - name: web-gateway
   hostnames:
     - rohitpotato.xyz
+    - www.rohitpotato.xyz
   rules:
     - matches:
         - path:

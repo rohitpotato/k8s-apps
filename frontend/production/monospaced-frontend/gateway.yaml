@@ -8,10 +8,22 @@ metadata:
 spec:
   gatewayClassName: traefik
   listeners:
-    - name: https
+    - name: https-root
       protocol: HTTPS
-      port: 8443
+      port: 443
       hostname: rohitpotato.xyz
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - kind: Secret
+            name: rohitpotato-xyz-tls
+      allowedRoutes:
+        namespaces:
+          from: Same
+    - name: https-www
+      protocol: HTTPS
+      port: 443
+      hostname: www.rohitpotato.xyz
       tls:
         mode: Terminate
         certificateRefs:
