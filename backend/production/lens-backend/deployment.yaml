@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lens-backend
+  namespace: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: lens-backend
+  template:
+    metadata:
+      labels:
+        app: lens-backend
+    spec:
+      nodeSelector:
+        nodeRole: worker
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - lens-backend
+              topologyKey: kubernetes.io/hostname
+      containers:
+        - name: lens-backend
+          image: ghcr.io/rohitpotato/lens/backend:main-80e8fe5
+          imagePullPolicy: Always
+          env:
+            - name: NODE_OPTIONS
+              value: "--max-old-space-size=256"
+          envFrom:
+            - secretRef:
+                name: lens-secret
+          ports:
+            - containerPort: 3001
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 3001
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 3001
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          resources:
+            requests:
+              memory: "200Mi"
+              cpu: "100m"
+            limits:
+              memory: "400Mi"
+              cpu: "300m"
