@@ -38,7 +38,7 @@ spec:
               topologyKey: kubernetes.io/hostname
       containers:
         - name: lens-consumer
-          image: ghcr.io/rohitpotato/lens/consumer:sha-87e0f1d
+          image: ghcr.io/rohitpotato/lens/consumer:sha-5f33fd6
           imagePullPolicy: Always
           env:
             - name: METRICS_PORT
