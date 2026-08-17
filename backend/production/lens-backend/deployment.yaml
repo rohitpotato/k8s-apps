@@ -27,6 +27,25 @@ spec:
                   values:
                   - lens-backend
               topologyKey: kubernetes.io/hostname
+      # Migrations run once before the api container starts. `drizzle-kit migrate`
+      # is idempotent — it reads the migrations table and applies only what's new,
+      # so every pod restart is safe. Uses the api image (drizzle-kit ships in
+      # node_modules) with a command override.
+      initContainers:
+        - name: db-migrate
+          image: ghcr.io/rohitpotato/lens/backend:main-80e8fe5
+          imagePullPolicy: Always
+          command: ["pnpm", "--filter", "@lens/db", "db:migrate"]
+          envFrom:
+            - secretRef:
+                name: lens-secret
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "50m"
+            limits:
+              memory: "256Mi"
+              cpu: "200m"
       containers:
         - name: lens-backend
           image: ghcr.io/rohitpotato/lens/backend:main-80e8fe5
@@ -38,17 +57,18 @@ spec:
             - secretRef:
                 name: lens-secret
           ports:
-            - containerPort: 3001
+            - name: http
+              containerPort: 3001
           readinessProbe:
             httpGet:
               path: /health
-              port: 3001
+              port: http
             initialDelaySeconds: 10
             periodSeconds: 10
           livenessProbe:
             httpGet:
               path: /health
-              port: 3001
+              port: http
             initialDelaySeconds: 10
             periodSeconds: 10
           resources:
