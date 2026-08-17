@@ -44,7 +44,7 @@ spec:
       # node_modules) with a command override.
       initContainers:
         - name: db-migrate
-          image: ghcr.io/rohitpotato/lens/backend:sha-dfa6952
+          image: ghcr.io/rohitpotato/lens/backend:sha-cc0c670
           imagePullPolicy: Always
           command: ["pnpm", "--filter", "@lens/db", "db:migrate"]
           envFrom:
@@ -59,7 +59,7 @@ spec:
               cpu: "200m"
       containers:
         - name: lens-backend
-          image: ghcr.io/rohitpotato/lens/backend:sha-dfa6952
+          image: ghcr.io/rohitpotato/lens/backend:sha-cc0c670
           imagePullPolicy: Always
           env:
             - name: NODE_OPTIONS
