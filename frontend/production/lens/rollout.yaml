@@ -99,17 +99,9 @@ spec:
               readOnly: true
   strategy:
     canary:
-      # analysis:
-      #   templates:
-      #   - templateName: lens-analysis-template
-      canaryService: lens-canary
-      stableService: lens-stable
-      trafficRouting:
-        plugins:
-          argoproj-labs/gatewayAPI:
-            httpRoute: lens
-            namespace: frontend
-      dynamicStableScale: true
+      # Traffic split via replica count only — plain Ingress backend is the
+      # single `lens` Service that selects `app: lens`, so it round-robins
+      # across stable + canary pods proportional to their replica counts.
       steps:
       - setWeight: 10
       - pause:

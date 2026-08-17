@@ -1,31 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: lens-stable
-  namespace: frontend
-  labels:
-    app: lens
-    stack: lens
-spec:
-  # Argo Rollouts injects a pod-template-hash selector at runtime to route
-  # traffic to the current stable ReplicaSet. The `app: lens` here is just
-  # the base selector — Rollouts adds `rollouts-pod-template-hash: <sha>` on
-  # top so stable and canary Services aim at different pod sets.
-  selector:
-    app: lens
-  ports:
-    - name: http
-      port: 3000
-      targetPort: 3000
-    - name: metrics
-      port: 4040
-      targetPort: 4040
-  type: ClusterIP
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: lens-canary
+  name: lens
   namespace: frontend
   labels:
     app: lens
