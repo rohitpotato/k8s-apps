@@ -6,9 +6,11 @@ metadata:
   labels:
     release: kube-prometheus-stack
 spec:
+  # Services now labelled `app: lens` (matches rollout pod label). Selector
+  # matches the base label; scrapes both lens-stable and lens-canary.
   selector:
     matchLabels:
-      app: lens-frontend
+      app: lens
   endpoints:
     - port: metrics
       interval: 30s

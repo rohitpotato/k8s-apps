@@ -1,7 +1,9 @@
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
-  name: lens-frontend
+  # Name matches `trafficRouting.plugins.argoproj-labs/gatewayAPI.httpRoute`
+  # in the Rollout — Rollouts rewrites these weights during canary steps.
+  name: lens
   namespace: frontend
 spec:
   parentRefs:
@@ -15,9 +17,9 @@ spec:
             type: PathPrefix
             value: /
       backendRefs:
-        - name: lens-frontend-stable  
+        - name: lens-stable
           port: 3000
           weight: 100
-        - name: lens-frontend-canary
+        - name: lens-canary
           port: 3000
           weight: 0
