@@ -31,9 +31,28 @@ spec:
         - name: lens-consumer
           image: ghcr.io/rohitpotato/lens/consumer:main-80e8fe5
           imagePullPolicy: Always
+          env:
+            - name: METRICS_PORT
+              value: "9091"
           envFrom:
             - secretRef:
                 name: lens-secret
+          ports:
+            # Worker has no HTTP API — this port serves /metrics + /health for Prometheus and probes.
+            - name: metrics
+              containerPort: 9091
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: metrics
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: metrics
+            initialDelaySeconds: 20
+            periodSeconds: 20
           resources:
             requests:
               memory: "200Mi"

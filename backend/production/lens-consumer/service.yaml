@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: lens-consumer
+  namespace: backend
+  labels:
+    app: lens-consumer
+spec:
+  # Headless — the worker doesn't take traffic, this Service exists only so
+  # Prometheus's ServiceMonitor has an endpoint to scrape.
+  clusterIP: None
+  selector:
+    app: lens-consumer
+  ports:
+    - name: metrics
+      port: 9091
+      targetPort: metrics
