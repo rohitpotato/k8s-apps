@@ -1,0 +1,38 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: nginx-exporter-config
+  namespace: frontend
+data:
+  config.hcl: |
+    listen {
+      port = 4040
+      address = "0.0.0.0"
+    }
+
+    namespace "nginx" {
+      source {
+        files = ["/var/log/nginx/exporter-access.log"]
+      }
+      parser = "json"
+
+      labels {
+        app = "lens"
+      }
+
+      relabel "host" {
+        from = "host"
+      }
+
+      relabel "method" {
+        from = "method"
+      }
+
+      # Raw URI is high-cardinality — fine for a small SPA, keep an eye on
+      # Prometheus series count if traffic grows.
+      relabel "uri" {
+        from = "uri"
+      }
+
+      histogram_buckets = [0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1, 2.5, 5, 10]
+    }
