@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: lens-backend-ingress
+  namespace: backend
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-production
+    traefik.ingress.kubernetes.io/router.middlewares: default-redirect-https@kubernetescrd
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: api-lens.rohitpotato.xyz
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: lens-backend
+                port:
+                  number: 3001
+  tls:
+    - hosts:
+        - api-lens.rohitpotato.xyz
+      secretName: lens-backend-tls

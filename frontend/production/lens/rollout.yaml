@@ -1,0 +1,121 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: lens
+  namespace: frontend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: lens
+  template:
+    metadata:
+      labels:
+        app: lens
+    spec:
+      volumes:
+      - name: nginx-logs
+        emptyDir: {}
+      - name: exporter-config
+        configMap:
+          name: nginx-exporter-config
+      # Runtime frontend config. Mounted OVER the config.js shipped in the image
+      # so the same image works across environments.
+      - name: lens-config
+        configMap:
+          name: lens-frontend-config
+          items:
+            - key: config.js
+              path: config.js
+      nodeSelector:
+        nodeRole: worker
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - lens
+              topologyKey: kubernetes.io/hostname
+      containers:
+        - name: lens
+          image: ghcr.io/rohitpotato/lens/frontend:main-ae1e1a1
+          imagePullPolicy: Always
+          volumeMounts:
+          - name: nginx-logs
+            mountPath: /var/log/nginx
+          - name: lens-config
+            mountPath: /usr/share/nginx/html/config.js
+            subPath: config.js
+          envFrom:
+            - secretRef:
+                name: lens-secret
+          ports:
+            - containerPort: 3000
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 3000
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 3000
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          resources:
+            requests:
+              memory: "50Mi"
+              cpu: "30m"
+            limits:
+              memory: "100Mi"
+              cpu: "60m"
+        - name: nginxlog-exporter
+          image: quay.io/martinhelmich/prometheus-nginxlog-exporter:v1.11.0
+          args: ["-config-file", "/etc/prometheus-nginxlog-exporter/config.hcl"]
+          ports:
+            - name: metrics
+              containerPort: 4040
+          volumeMounts:
+            - name: exporter-config
+              mountPath: /etc/prometheus-nginxlog-exporter
+            - name: nginx-logs
+              mountPath: /var/log/nginx
+              readOnly: true
+  strategy:
+    canary:
+      # analysis:
+      #   templates:
+      #   - templateName: lens-analysis-template
+      canaryService: lens-canary
+      stableService: lens-stable
+      trafficRouting:
+        plugins:
+          argoproj-labs/gatewayAPI:
+            httpRoute: lens
+            namespace: frontend
+      dynamicStableScale: true
+      steps:
+      - setWeight: 10
+      - pause:
+          duration: 30
+      - setWeight: 30
+      - pause:
+          duration: 30
+      - setWeight: 50
+      - pause:
+          duration: 30
+      - setWeight: 70
+      - pause:
+          duration: 30
+      - setWeight: 90
+      - pause:
+          duration: 30
+      - setWeight: 99
+      - pause: {}
+      - setWeight: 100

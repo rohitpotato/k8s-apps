@@ -1,0 +1,30 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: minio
+  namespace: argocd
+  annotations:
+    # Wave 2 — same as redis. Data plane comes up before the app deployments (wave 4).
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  project: k8s-apps-project
+  sources:
+  - repoURL: https://charts.bitnami.com/bitnami
+    chart: minio
+    targetRevision: 14.9.0
+    helm:
+      valueFiles:
+      - $values/minio/values.yaml
+  - repoURL: https://github.com/rohitpotato/k8s-apps.git
+    targetRevision: main
+    ref: values
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: minio
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true

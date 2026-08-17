@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lens-consumer
+  namespace: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: lens-consumer
+  template:
+    metadata:
+      labels:
+        app: lens-consumer
+    spec:
+      nodeSelector:
+        nodeRole: worker
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - lens-consumer
+              topologyKey: kubernetes.io/hostname
+      containers:
+        - name: lens-consumer
+          image: ghcr.io/rohitpotato/lens/consumer:main-80e8fe5
+          imagePullPolicy: Always
+          env:
+            - name: METRICS_PORT
+              value: "9091"
+          envFrom:
+            - secretRef:
+                name: lens-secret
+          ports:
+            # Worker has no HTTP API — this port serves /metrics + /health for Prometheus and probes.
+            - name: metrics
+              containerPort: 9091
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: metrics
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: metrics
+            initialDelaySeconds: 20
+            periodSeconds: 20
+          resources:
+            requests:
+              memory: "200Mi"
+              cpu: "100m"
+            limits:
+              memory: "400Mi"
+              cpu: "300m"

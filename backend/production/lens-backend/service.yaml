@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: lens-backend
+  namespace: backend
+  labels:
+    app: lens-backend
+spec:
+  selector:
+    app: lens-backend
+  ports:
+    - name: http
+      port: 3001
+      targetPort: http
+      # /metrics is served on the same port as the API — one containerPort, one Service port.
+  type: ClusterIP
