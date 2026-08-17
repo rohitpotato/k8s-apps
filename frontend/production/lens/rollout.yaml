@@ -12,6 +12,7 @@ spec:
     metadata:
       labels:
         app: lens
+        stack: lens
     spec:
       volumes:
       - name: nginx-logs
@@ -29,6 +30,15 @@ spec:
               path: config.js
       nodeSelector:
         nodeRole: worker
+      # Spread lens-* pods across worker nodes. Frontend replicas=2 also gets
+      # its own same-app anti-affinity below (existing).
+      topologySpreadConstraints:
+      - maxSkew: 1
+        topologyKey: kubernetes.io/hostname
+        whenUnsatisfiable: ScheduleAnyway
+        labelSelector:
+          matchLabels:
+            stack: lens
       affinity:
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:

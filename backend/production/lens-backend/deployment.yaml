@@ -12,9 +12,20 @@ spec:
     metadata:
       labels:
         app: lens-backend
+        stack: lens
     spec:
       nodeSelector:
         nodeRole: worker
+      # Spread lens-* pods across worker nodes so one node reboot doesn't take
+      # the whole stack down. `ScheduleAnyway` keeps it functional on
+      # single-node clusters; scales cleanly as workers are added.
+      topologySpreadConstraints:
+      - maxSkew: 1
+        topologyKey: kubernetes.io/hostname
+        whenUnsatisfiable: ScheduleAnyway
+        labelSelector:
+          matchLabels:
+            stack: lens
       affinity:
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:

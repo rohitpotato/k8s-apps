@@ -12,9 +12,18 @@ spec:
     metadata:
       labels:
         app: lens-consumer
+        stack: lens
     spec:
       nodeSelector:
         nodeRole: worker
+      # See note in lens-backend deployment.yaml.
+      topologySpreadConstraints:
+      - maxSkew: 1
+        topologyKey: kubernetes.io/hostname
+        whenUnsatisfiable: ScheduleAnyway
+        labelSelector:
+          matchLabels:
+            stack: lens
       affinity:
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
