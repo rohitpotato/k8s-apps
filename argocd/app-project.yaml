@@ -44,6 +44,12 @@ spec:
       server: https://kubernetes.default.svc
     - namespace: default
       server: https://kubernetes.default.svc
+    - namespace: frontend
+      server: https://kubernetes.default.svc
+    - namespace: backend
+      server: https://kubernetes.default.svc 
+    - namespace: minio
+      server: https://kubernetes.default.svc
   clusterResourceWhitelist:
     - group: '*'      # All API groups
       kind: '*'       # All kinds
