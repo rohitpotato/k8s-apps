@@ -2,6 +2,14 @@
 # helm chart pulled by ArgoCD from bitnami's repo, values kept in git.
 mode: standalone
 
+# Bitnami moved active images to a paid Secure Images registry; the
+# community chart falls back to docker.io/bitnamilegacy/* and its NOTES
+# hook aborts unless this flag is set. We're fine running the legacy
+# tag for now — it still receives CVE fixes.
+global:
+  security:
+    allowInsecureImages: true
+
 image:
   registry: docker.io
   repository: bitnamilegacy/minio
