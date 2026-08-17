@@ -19,6 +19,14 @@ spec:
       - name: exporter-config
         configMap:
           name: nginx-exporter-config
+      # Runtime frontend config. Mounted OVER the config.js shipped in the image
+      # so the same image works across environments.
+      - name: lens-config
+        configMap:
+          name: lens-frontend-config
+          items:
+            - key: config.js
+              path: config.js
       nodeSelector:
         nodeRole: worker
       affinity:
@@ -40,6 +48,9 @@ spec:
           volumeMounts:
           - name: nginx-logs
             mountPath: /var/log/nginx
+          - name: lens-config
+            mountPath: /usr/share/nginx/html/config.js
+            subPath: config.js
           envFrom:
             - secretRef:
                 name: lens-secret
@@ -47,13 +58,13 @@ spec:
             - containerPort: 3000
           readinessProbe:
             httpGet:
-              path: /
+              path: /healthz
               port: 3000
             initialDelaySeconds: 10
             periodSeconds: 10
           livenessProbe:
             httpGet:
-              path: /
+              path: /healthz
               port: 3000
             initialDelaySeconds: 10
             periodSeconds: 10

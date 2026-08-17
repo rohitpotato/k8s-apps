@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: lens-frontend-config
+  namespace: frontend
+  labels:
+    app: lens-frontend
+data:
+  # Overrides /usr/share/nginx/html/config.js from the shipped image.
+  # Same image, per-environment API base URL — no rebuild needed.
+  # Update this value if the backend hostname changes.
+  config.js: |
+    window.__LENS_CONFIG__ = {
+      API_BASE_URL: "https://api-lens.rohitpotato.xyz",
+    };
