@@ -21,6 +21,15 @@ auth:
   rootUserSecretKey: MINIO_ROOT_USER
   rootPasswordSecretKey: MINIO_ROOT_PASSWORD
 
+# Without these, the console's download button generates URLs relative to
+# its own hostname and MinIO rejects the object key with
+# "Object name contains unsupported characters".
+extraEnvVars:
+  - name: MINIO_SERVER_URL
+    value: https://s3-minio-lens.rohitpotato.xyz
+  - name: MINIO_BROWSER_REDIRECT_URL
+    value: https://console-minio-lens.rohitpotato.xyz
+
 defaultBuckets: "lens-documents"
 
 service:
