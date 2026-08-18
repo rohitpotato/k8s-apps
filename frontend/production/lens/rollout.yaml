@@ -53,7 +53,7 @@ spec:
               topologyKey: kubernetes.io/hostname
       containers:
         - name: lens
-          image: ghcr.io/rohitpotato/lens/frontend:sha-fb9ade2
+          image: ghcr.io/rohitpotato/lens/frontend:sha-cd404b0
           imagePullPolicy: Always
           volumeMounts:
           - name: nginx-logs
