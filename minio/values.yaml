@@ -46,3 +46,24 @@ metrics:
     enabled: true
     labels:
       release: kube-prometheus-stack
+
+# Web console (port 9001).
+ingress:
+  enabled: true
+  ingressClassName: traefik
+  hostname: console-minio-lens.rohitpotato.xyz
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-production
+    traefik.ingress.kubernetes.io/router.middlewares: default-redirect-https@kubernetescrd
+  tls: true
+  # cert-manager auto-creates the secret from the annotation.
+
+# S3 API (port 9000) — used for presigned document downloads.
+apiIngress:
+  enabled: true
+  ingressClassName: traefik
+  hostname: s3-minio-lens.rohitpotato.xyz
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-production
+    traefik.ingress.kubernetes.io/router.middlewares: default-redirect-https@kubernetescrd
+  tls: true
