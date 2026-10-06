@@ -1,3 +1,6 @@
+# No dataStorage block on purpose: the live PVC is the chart default (10Gi,
+# default storageClass). volumeClaimTemplates are immutable, so pinning a
+# different size here would break every sync of the StatefulSet.
 server:
   ha:
     enabled: false
@@ -5,7 +8,7 @@ server:
     enabled: true
     config: |
       ui = true
-      
+
       listener "tcp" {
         address     = "0.0.0.0:8200"
         tls_disable = 1
@@ -13,29 +16,6 @@ server:
       storage "file" {
         path = "/vault/data"
       }
-
-ui:
-  enabled: true
-
-injector:
-  enabled: true
-
-# Use ReadWriteOnce storage for single node
-dataStorage:
-  enabled: true
-  size: 5Gi
-  storageClass: "local-path"
-  accessModes:
-    - ReadWriteOnce
-  finalizers:
-    - kubernetes.io/pvc-protection
-
-# Remove PDB for single node
-pdb:
-  enabled: false
-
-# Resource limits for Vault pod
-server:
   nodeSelector:
     nodeRole: worker
   affinity:
@@ -57,3 +37,10 @@ server:
     limits:
       memory: "512Mi"
       cpu: "400m"
+
+ui:
+  enabled: true
+
+# Secrets reach pods via ESO; nothing uses the agent injector.
+injector:
+  enabled: false

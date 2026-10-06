@@ -1,8 +1,16 @@
+# Overrides for the k3s-bundled Traefik chart. k3s's helm-controller watches
+# this object and re-runs `helm upgrade` on the traefik HelmChart whenever it
+# changes, so a bad edit here rolls Traefik (and every ingress) immediately.
 apiVersion: helm.cattle.io/v1
 kind: HelmChartConfig
 metadata:
   name: traefik
   namespace: kube-system
+  annotations:
+    # Never delete this from Argo: without it Traefik falls back to k3s
+    # defaults (no Gateway API provider), which breaks the monospaced
+    # HTTPRoute and canaries.
+    argocd.argoproj.io/sync-options: Delete=false,Prune=false
 spec:
   valuesContent: |-
     providers:
@@ -10,3 +18,33 @@ spec:
         enabled: true
     gateway:
       enabled: false
+
+    # Data plane must survive the master going down: one replica per worker.
+    deployment:
+      replicas: 2
+    nodeSelector:
+      nodeRole: worker
+    affinity:
+      podAntiAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchLabels:
+                app.kubernetes.io/name: traefik
+                app.kubernetes.io/instance: traefik-kube-system
+            topologyKey: kubernetes.io/hostname
+    # Two workers + required anti-affinity leaves nowhere for a surge pod,
+    # so replace in place one at a time instead.
+    updateStrategy:
+      type: RollingUpdate
+      rollingUpdate:
+        maxSurge: 0
+        maxUnavailable: 1
+    podDisruptionBudget:
+      enabled: true
+      minAvailable: 1
+    resources:
+      requests:
+        cpu: 50m
+        memory: 64Mi
+      limits:
+        memory: 256Mi

@@ -22,6 +22,4 @@ spec:
   - matchLabels:
       "kubernetes.io/metadata.name": "postgres"
   - matchLabels:
-      "kubernetes.io/metadata.name": "analytics"
-  - matchLabels:
       "kubernetes.io/metadata.name": "monitoring"

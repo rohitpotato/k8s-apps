@@ -10,8 +10,6 @@ spec:
     - https://prometheus-community.github.io/helm-charts
     - https://charts.external-secrets.io
     - https://grafana.github.io/helm-charts
-    - https://helm.linkerd.io/edge
-    - https://helm.linkerd.io/stable
     - https://charts.bitnami.com/bitnami
     - oci://quay.io/jetstack/charts/cert-manager
     - https://github.com/argoproj/argo-helm.git
@@ -32,8 +30,6 @@ spec:
       server: https://kubernetes.default.svc
     - namespace: analytics
       server: https://kubernetes.default.svc
-    - namespace: linkerd
-      server: https://kubernetes.default.svc
     - namespace: redis
       server: https://kubernetes.default.svc
     - namespace: argo-rollouts
@@ -43,12 +39,6 @@ spec:
     - namespace: alertmanager
       server: https://kubernetes.default.svc
     - namespace: default
-      server: https://kubernetes.default.svc
-    - namespace: frontend
-      server: https://kubernetes.default.svc
-    - namespace: backend
-      server: https://kubernetes.default.svc 
-    - namespace: minio
       server: https://kubernetes.default.svc
   clusterResourceWhitelist:
     - group: '*'      # All API groups
