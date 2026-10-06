@@ -18,6 +18,10 @@ spec:
       labels:
         app: goatcounter
     spec:
+      # GoatCounter reads every GOATCOUNTER_* env var as a flag. Service links
+      # inject GOATCOUNTER_PORT=tcp://... for the `goatcounter` Service, which
+      # it rejects as an invalid -port and crashes on startup.
+      enableServiceLinks: false
       nodeSelector:
         nodeRole: worker
       securityContext:
