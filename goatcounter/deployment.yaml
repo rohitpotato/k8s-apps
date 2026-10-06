@@ -1,0 +1,52 @@
+# GoatCounter replaces Umami: single Go binary + SQLite, ~20-30Mi RSS.
+# SQLite lives on a local-path PVC, so the pod is pinned to whichever worker
+# first bound the volume. Recreate avoids two pods opening the same DB.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: goatcounter
+  namespace: analytics
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: goatcounter
+  template:
+    metadata:
+      labels:
+        app: goatcounter
+    spec:
+      nodeSelector:
+        nodeRole: worker
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+      containers:
+      - name: goatcounter
+        image: arp242/goatcounter:2.7.0
+        # Image defaults: listen :8080, plain HTTP (Traefik terminates TLS),
+        # SQLite at goatcounter-data/db.sqlite3.
+        args: ["serve", "-automigrate"]
+        ports:
+        - containerPort: 8080
+          name: http
+        volumeMounts:
+        - name: data
+          mountPath: /home/goatcounter/goatcounter-data
+        readinessProbe:
+          tcpSocket:
+            port: http
+          periodSeconds: 10
+        resources:
+          requests:
+            memory: "32Mi"
+            cpu: "10m"
+          limits:
+            memory: "128Mi"
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: goatcounter-data

@@ -1,0 +1,25 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: traefik-config
+  namespace: argocd
+  annotations:
+    # Before anything that serves Ingress/HTTPRoute traffic.
+    argocd.argoproj.io/sync-wave: "0"
+  # No resources-finalizer: deleting this Application must not take the
+  # Traefik overrides (and with them every ingress) down.
+spec:
+  project: k8s-apps-project
+  source:
+    repoURL: https://github.com/rohitpotato/k8s-apps.git
+    targetRevision: main
+    path: cluster
+  destination:
+    server: https://kubernetes.default.svc
+    # HelmChartConfig pins kube-system itself; the redirect Middleware has
+    # no namespace and is referenced as default-redirect-https.
+    namespace: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

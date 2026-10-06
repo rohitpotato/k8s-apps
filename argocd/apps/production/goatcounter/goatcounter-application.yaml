@@ -1,7 +1,7 @@
-apiVersion: argoproj.io/v1alpha1
 kind: Application
+apiVersion: argoproj.io/v1alpha1
 metadata:
-  name: lens-consumer
+  name: goatcounter
   namespace: argocd
   annotations:
     argocd.argoproj.io/sync-wave: "4"
@@ -9,14 +9,14 @@ spec:
   project: k8s-apps-project
   source:
     repoURL: https://github.com/rohitpotato/k8s-apps.git
-    targetRevision: HEAD
-    path: backend/production/lens-consumer
+    targetRevision: main
+    path: goatcounter
   destination:
     server: https://kubernetes.default.svc
-    namespace: backend
+    namespace: analytics
   syncPolicy:
     automated:
       prune: true
-      selfHeal: true 
+      selfHeal: true
     syncOptions:
       - CreateNamespace=true

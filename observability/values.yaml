@@ -66,56 +66,63 @@ grafana:
         timescaledb: false
   resources:
     requests:
-      memory: "128Mi"
+      memory: "256Mi"
       cpu: "100m"
     limits:
-      memory: "256Mi"
+      memory: "512Mi"
       cpu: "200m"
+  # Dashboard/datasource sidecars had no requests and made up most of
+  # Grafana's footprint.
+  sidecar:
+    resources:
+      requests:
+        memory: "96Mi"
+        cpu: "10m"
+      limits:
+        memory: "256Mi"
 defaultRules:
   rules:
+    # k3s runs etcd/controller-manager/scheduler/kube-proxy inside the k3s
+    # binary; their scrapes are disabled below, so their rules would only
+    # ever evaluate against nothing.
     etcd: false
+    kubeControllerManager: false
+    kubeSchedulerAlerting: false
+    kubeSchedulerRecording: false
+    kubeProxy: false
+    # Built on the apiserver histograms dropped below.
+    kubeApiserverBurnrate: false
+    kubeApiserverHistogram: false
+    kubeApiserverSlos: false
 
 kubeEtcd:
-  enabled: true
+  enabled: false
 
 kubeControllerManager:
-  enabled: true
-  endpoints: ['45.136.30.195'] # this is master node's actual ip address
-  service:
-    enabled: true
-    port: 10257
-    targetPort: 10257
-  serviceMonitor:
-    enabled: true
-    https: false
+  enabled: false
 
 kubeScheduler:
-  enabled: true
-  endpoints: ['45.136.30.195'] # this is master node's actual ip address
-  service:
-    enabled: true
-    port: 10259
-    targetPort: 10259
-  serviceMonitor:
-    enabled: true
-    https: false
+  enabled: false
 
 kubeProxy:
-  enabled: true
-  endpoints: ['45.136.30.195'] # this is master node's actual ip address
-  service:
-    enabled: true
-    port: 10249
-    targetPort: 10249
+  enabled: false
+
+# Apiserver latency/size histograms are the largest series sets in the
+# stack and nothing here reads them.
+kubeApiServer:
   serviceMonitor:
-    enabled: true
-    https: false
+    metricRelabelings:
+      - sourceLabels: [__name__]
+        action: drop
+        regex: (apiserver_request_duration_seconds_bucket|apiserver_request_sli_duration_seconds_bucket|apiserver_request_body_size_bytes_bucket|apiserver_response_sizes_bucket|apiserver_watch_events_sizes_bucket|apiserver_watch_list_duration_seconds_bucket|etcd_request_duration_seconds_bucket)
 
 # Resource limits for Prometheus stack components
 prometheus:
   prometheusSpec:
     ruleSelector: {}
     ruleNamespaceSelector: {}
+    retention: 3d
+    retentionSize: 1500MB
     nodeSelector:
       nodeRole: worker
     affinity:
@@ -132,10 +139,10 @@ prometheus:
             topologyKey: kubernetes.io/hostname
     resources:
       requests:
-        memory: "512Mi"
+        memory: "768Mi"
         cpu: "200m"
       limits:
-        memory: "1Gi"
+        memory: "1536Mi"
         cpu: "400m"
 
 alertmanager:

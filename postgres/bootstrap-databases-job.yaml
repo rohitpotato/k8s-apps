@@ -44,7 +44,7 @@ spec:
                   key: password
             - name: DATABASES
               # Space-separated list — add new app databases here.
-              value: "lens"
+              value: ""
           command:
             - sh
             - -euc
