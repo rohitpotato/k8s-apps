@@ -1,0 +1,25 @@
+# Argo CD manages itself from here (see argocd/apps/production/argocd.yaml).
+# Keep the version below in sync with what's running; bumping it IS the
+# upgrade. If a bad commit breaks Argo, recover with:
+#   kubectl apply --server-side --force-conflicts -k argocd/install
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: argocd
+resources:
+  - https://raw.githubusercontent.com/argoproj/argo-cd/v3.3.1/manifests/install.yaml
+  - app-project.yaml
+  - ingress.yaml
+patches:
+  - path: patches/argocd-cmd-params-cm.yaml
+  - path: patches/argocd-cm.yaml
+  - path: patches/argocd-rbac-cm.yaml
+  - path: patches/application-controller-resources.yaml
+  # No ApplicationSets, SSO (Dex) or notifications in use; scale them to
+  # zero rather than deleting so turning one back on is a one-line change.
+  - target:
+      kind: Deployment
+      name: argocd-(applicationset-controller|dex-server|notifications-controller)
+    patch: |-
+      - op: replace
+        path: /spec/replicas
+        value: 0
