@@ -1,0 +1,28 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: coredns
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+    # Diff only the fields in git; the default diff would flag everything
+    # k3s set on the Deployment as drift.
+    argocd.argoproj.io/compare-options: ServerSideDiff=true
+  # No resources-finalizer: deleting this Application must not touch CoreDNS.
+spec:
+  project: k8s-apps-project
+  source:
+    repoURL: https://github.com/rohitpotato/k8s-apps.git
+    targetRevision: main
+    path: cluster-dns
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: kube-system
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      # Required for the partial Deployment manifest to merge onto the
+      # k3s-created object instead of replacing it.
+      - ServerSideApply=true

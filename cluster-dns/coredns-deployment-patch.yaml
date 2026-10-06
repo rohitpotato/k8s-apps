@@ -1,0 +1,34 @@
+# Partial manifest: only the fields we own. k3s created this Deployment
+# from /var/lib/rancher/k3s/server/manifests/coredns.yaml; with a
+# coredns.yaml.skip next to it k3s stops re-applying that file, and Argo's
+# server-side apply merges these fields onto the live object.
+#
+# Note: with .skip in place, k3s upgrades no longer bump CoreDNS.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: coredns
+  namespace: kube-system
+  annotations:
+    # Never let Argo delete CoreDNS: this is a patch, not the full object.
+    argocd.argoproj.io/sync-options: Delete=false,Prune=false
+spec:
+  replicas: 2
+  # Two workers + required anti-affinity leaves nowhere for a surge pod.
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 0
+      maxUnavailable: 1
+  template:
+    spec:
+      # Pods keep resolving service names if the master goes down.
+      nodeSelector:
+        nodeRole: worker
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchLabels:
+                  k8s-app: kube-dns
+              topologyKey: kubernetes.io/hostname
