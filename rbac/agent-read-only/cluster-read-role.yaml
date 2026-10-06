@@ -1,0 +1,55 @@
+# Fills the gaps in `view`: cluster-scoped objects and CRDs that don't
+# aggregate into it. Read verbs only, and every rule names its API group:
+# never grant `*` on the core group, since that silently includes Secrets.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: agent-cluster-read
+rules:
+  # Cluster-scoped core objects (`view` covers only namespaced ones).
+  - apiGroups: [""]
+    resources: ["nodes", "persistentvolumes", "namespaces"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["storage.k8s.io"]
+    resources: ["storageclasses", "csidrivers", "csinodes", "volumeattachments"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["networking.k8s.io"]
+    resources: ["ingressclasses"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["scheduling.k8s.io"]
+    resources: ["priorityclasses"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["node.k8s.io"]
+    resources: ["runtimeclasses"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["apiextensions.k8s.io"]
+    resources: ["customresourcedefinitions"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["apiregistration.k8s.io"]
+    resources: ["apiservices"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["admissionregistration.k8s.io"]
+    resources: ["validatingwebhookconfigurations", "mutatingwebhookconfigurations"]
+    verbs: ["get", "list", "watch"]
+  # Who-can-do-what, for debugging permission errors.
+  - apiGroups: ["rbac.authorization.k8s.io"]
+    resources: ["roles", "rolebindings", "clusterroles", "clusterrolebindings"]
+    verbs: ["get", "list", "watch"]
+  # kubectl top.
+  - apiGroups: ["metrics.k8s.io"]
+    resources: ["pods", "nodes"]
+    verbs: ["get", "list"]
+  # CRDs in this cluster. Some charts aggregate into `view` already; listing
+  # the groups here keeps access independent of chart defaults.
+  - apiGroups:
+      - argoproj.io                # Applications, AppProjects, Rollouts, AnalysisRuns
+      - gateway.networking.k8s.io  # Gateways, HTTPRoutes
+      - traefik.io                 # Middlewares, IngressRoutes
+      - monitoring.coreos.com      # ServiceMonitors, PrometheusRules, AlertmanagerConfigs
+      - cert-manager.io
+      - acme.cert-manager.io
+      - external-secrets.io        # references to Vault paths only, not secret values
+      - helm.cattle.io             # k3s HelmChart / HelmChartConfig
+      - k3s.cattle.io              # k3s Addons
+    resources: ["*"]
+    verbs: ["get", "list", "watch"]
