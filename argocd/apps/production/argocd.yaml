@@ -1,0 +1,27 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: argocd
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"
+  # No resources-finalizer: deleting this Application must never cascade
+  # into deleting Argo CD itself.
+spec:
+  project: k8s-apps-project
+  source:
+    repoURL: https://github.com/rohitpotato/k8s-apps.git
+    targetRevision: main
+    path: argocd/install
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+  syncPolicy:
+    automated:
+      # No prune: a bad commit here shouldn't be able to delete Argo's own
+      # components. Remove stale objects by hand.
+      prune: false
+      selfHeal: true
+    syncOptions:
+      # Argo CD's CRDs exceed the client-side last-applied annotation limit.
+      - ServerSideApply=true
