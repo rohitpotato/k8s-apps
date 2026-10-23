@@ -35,7 +35,7 @@ spec:
               topologyKey: kubernetes.io/hostname
       containers:
         - name: monospaced-frontend
-          image: ghcr.io/rohitpotato/monospaced-stack/frontend:main-8aba45a
+          image: ghcr.io/rohitpotato/monospaced-stack/frontend:main-1403103
           imagePullPolicy: Always
           volumeMounts:
           - name: nginx-logs
