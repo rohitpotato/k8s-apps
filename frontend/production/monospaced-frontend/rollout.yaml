@@ -37,6 +37,12 @@ spec:
         - name: monospaced-frontend
           image: ghcr.io/rohitpotato/monospaced-stack/frontend:main-1403103
           imagePullPolicy: Always
+          env:
+            # nginx puts this in a Server-Timing header for the site's delivery receipt
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
           volumeMounts:
           - name: nginx-logs
             mountPath: /var/log/nginx
