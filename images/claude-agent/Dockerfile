@@ -32,10 +32,11 @@ RUN npm install -g "@anthropic-ai/claude-code@${CLAUDE_CODE_VERSION}" \
 COPY --chmod=0755 entrypoint.sh agent-login /usr/local/bin/
 
 # uid 1000 (`node`). $HOME is the PVC in the pod, so logins, ~/.claude.json
-# (folder trust), repos and worktrees survive restarts.
+# (folder trust), repos and worktrees survive restarts. Do not set
+# CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC: Remote Control needs feature-flag
+# evaluation and refuses to start with it.
 USER node
 ENV HOME=/home/node \
-    DISABLE_AUTOUPDATER=1 \
-    CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC=1
+    DISABLE_AUTOUPDATER=1
 WORKDIR /home/node
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
