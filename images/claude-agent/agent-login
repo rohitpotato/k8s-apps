@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+# One-time setup, run through `kubectl exec -it`: starts Claude in the
+# workspace so you can /login and accept the folder-trust prompt. Exit Claude
+# afterwards; the entrypoint notices the credentials and starts Remote Control.
+set -euo pipefail
+WORKDIR="${AGENT_WORKDIR:-$HOME/workspace}"
+mkdir -p "$WORKDIR"
+cd "$WORKDIR"
+echo "In Claude: run /login, accept the trust prompt, then /exit."
+exec claude

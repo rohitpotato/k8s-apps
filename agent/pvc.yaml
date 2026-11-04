@@ -1,0 +1,14 @@
+# $HOME for the agent: claude.ai login, folder trust, sessions, cloned repos
+# and worktrees. local-path, so the pod stays on whichever worker it first
+# lands on. Standalone PVC rather than volumeClaimTemplates, so deleting the
+# StatefulSet never orphans it and Argo has no template defaults to diff.
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: claude-agent-home
+spec:
+  accessModes: [ReadWriteOnce]
+  storageClassName: local-path
+  resources:
+    requests:
+      storage: 10Gi
