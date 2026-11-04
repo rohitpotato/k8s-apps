@@ -4,3 +4,6 @@ metadata:
   name: argocd-cm
 data:
   exec.enabled: "true"
+  # Git is polled less often (default 180s); pushes still show up within
+  # five minutes, and a manual refresh is instant.
+  timeout.reconciliation: 300s

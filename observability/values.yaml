@@ -71,9 +71,22 @@ grafana:
     limits:
       memory: "512Mi"
       cpu: "200m"
+  # Soft cap below the 512Mi limit so the Go GC works harder before the
+  # kernel OOM-kills the pod.
+  env:
+    GOMEMLIMIT: 400MiB
+  grafana.ini:
+    analytics:
+      reporting_enabled: false
+      check_for_updates: false
+      check_for_plugin_updates: false
   # Dashboard/datasource sidecars had no requests and made up most of
   # Grafana's footprint.
   sidecar:
+    # Load datasources once from an init container instead of keeping a
+    # second watcher running; datasource changes need a pod restart.
+    datasources:
+      initDatasources: true
     resources:
       requests:
         memory: "96Mi"
@@ -121,6 +134,11 @@ prometheus:
   prometheusSpec:
     ruleSelector: {}
     ruleNamespaceSelector: {}
+    # Default is 30s; nothing here needs finer resolution, and halving the
+    # sample rate shrinks the head block. ServiceMonitors that set their own
+    # interval (monospaced-frontend) keep it.
+    scrapeInterval: 60s
+    evaluationInterval: 60s
     retention: 3d
     retentionSize: 1500MB
     nodeSelector:
@@ -188,3 +206,29 @@ alertmanager:
       limits:
         memory: "256Mi"
         cpu: "200m"
+
+# Defaults sized from `kubectl top` (2026-11-03); re-check against p95 after
+# a week. CPU request only, memory limit only, like the Argo CD patches.
+prometheusOperator:
+  resources:
+    requests:
+      cpu: 10m
+      memory: 48Mi
+    limits:
+      memory: 128Mi
+
+kube-state-metrics:
+  resources:
+    requests:
+      cpu: 10m
+      memory: 48Mi
+    limits:
+      memory: 128Mi
+
+prometheus-node-exporter:
+  resources:
+    requests:
+      cpu: 10m
+      memory: 32Mi
+    limits:
+      memory: 96Mi

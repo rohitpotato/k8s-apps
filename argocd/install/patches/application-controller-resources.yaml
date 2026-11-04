@@ -8,6 +8,11 @@ spec:
     spec:
       containers:
         - name: argocd-application-controller
+          # Soft cap below the 1Gi limit so the Go GC trims the cluster
+          # cache before the kernel OOM-kills the controller.
+          env:
+            - name: GOMEMLIMIT
+              value: 800MiB
           resources:
             requests:
               cpu: 100m

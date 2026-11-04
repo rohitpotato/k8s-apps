@@ -1,0 +1,31 @@
+# Lives in monospaced because that's where the slack-webhook Secret is.
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: AlertmanagerConfig
+metadata:
+  name: platform-alert-routing
+  namespace: monospaced
+spec:
+  route:
+    receiver: slack-notifications
+    groupBy: ["alertname", "service"]
+    groupWait: 30s
+    groupInterval: 5m
+    repeatInterval: 12h
+    matchers:
+      - name: team
+        value: platform
+  receivers:
+    - name: slack-notifications
+      slackConfigs:
+        - apiURL:
+            name: slack-webhook
+            key: webhook_url
+          channel: '#alerts'
+          sendResolved: true
+          title: '{{ .Status | toUpper }}: {{ .CommonLabels.alertname }}'
+          text: >-
+            {{ range .Alerts }}
+            *Alert:* {{ .Labels.alertname }}
+            *Service:* {{ .Labels.service }}
+            *Description:* {{ .Annotations.summary }}
+            {{ end }}
