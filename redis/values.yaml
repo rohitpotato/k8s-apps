@@ -9,6 +9,10 @@ image:
   repository: bitnamilegacy/redis
   
 master:
+  # Data plane (the backend's BullMQ metrics queue): keep it running if the
+  # k3s master goes down.
+  nodeSelector:
+    nodeRole: worker
   service:
     type: ClusterIP
     port: 6379
