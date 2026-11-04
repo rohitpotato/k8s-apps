@@ -5,6 +5,11 @@ metadata:
   name: argocd-application-controller
 spec:
   template:
+    metadata:
+      annotations:
+        # argocd-cmd-params-cm is read at startup only; bump this when
+        # changing controller.* keys there so the controller restarts.
+        argocd-cmd-params/revision: "1"
     spec:
       containers:
         - name: argocd-application-controller

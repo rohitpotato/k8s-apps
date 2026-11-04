@@ -4,3 +4,7 @@ metadata:
   name: argocd-cmd-params-cm
 data:
   server.insecure: "true"
+  # Diff against a server-side dry run so API defaults (volumeMode on
+  # postgres's volumeClaimTemplates, ESO's conversionStrategy/deletionPolicy
+  # etc.) stop showing up as permanent OutOfSync.
+  controller.diff.server.side: "true"
