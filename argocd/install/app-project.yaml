@@ -40,6 +40,8 @@ spec:
       server: https://kubernetes.default.svc
     - namespace: default
       server: https://kubernetes.default.svc
+    - namespace: agent
+      server: https://kubernetes.default.svc
   clusterResourceWhitelist:
     - group: '*'      # All API groups
       kind: '*'       # All kinds

@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "permissions": {
+    "disableBypassPermissionsMode": "disable",
+    "deny": [
+      "Bash(gh pr merge:*)",
+      "Bash(gh repo delete:*)",
+      "Bash(gh api -X DELETE:*)",
+      "Bash(git push --force:*)",
+      "Bash(git push -f:*)",
+      "Bash(git push origin main:*)",
+      "Bash(git push origin HEAD:main:*)",
+      "Bash(kubectl create token:*)"
+    ],
+    "allow": [
+      "Bash(kubectl get:*)",
+      "Bash(kubectl describe:*)",
+      "Bash(kubectl logs:*)",
+      "Bash(kubectl top:*)",
+      "Bash(kubectl events:*)",
+      "Bash(kubectl explain:*)",
+      "Bash(kubectl api-resources:*)",
+      "Bash(kubectl auth can-i:*)",
+      "Bash(kubectl kustomize:*)",
+      "Bash(kubeconform:*)",
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(git show:*)",
+      "Bash(git clone:*)",
+      "Bash(git fetch:*)",
+      "Bash(git pull:*)",
+      "Bash(git switch:*)",
+      "Bash(git checkout:*)",
+      "Bash(git worktree:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(gh pr view:*)",
+      "Bash(gh pr list:*)",
+      "Bash(gh pr diff:*)",
+      "Bash(gh pr checks:*)",
+      "Bash(gh run view:*)",
+      "Bash(gh run list:*)",
+      "Bash(gh repo clone:*)",
+      "Bash(gh issue view:*)",
+      "Bash(gh issue list:*)"
+    ]
+  },
+  "env": {
+    "DISABLE_AUTOUPDATER": "1"
+  }
+}

@@ -1,0 +1,84 @@
+# One pod, one `claude remote-control` server, several sessions inside it
+# (AGENT_CAPACITY). Open sessions from claude.ai/code or the Claude app; each
+# runs as a child process here and shares $HOME and the workspace.
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: claude-agent
+spec:
+  replicas: 1
+  serviceName: claude-agent
+  selector:
+    matchLabels:
+      app: claude-agent
+  template:
+    metadata:
+      labels:
+        app: claude-agent
+    spec:
+      serviceAccountName: claude-agent
+      priorityClassName: agent-low
+      nodeSelector:
+        nodeRole: worker
+      enableServiceLinks: false
+      terminationGracePeriodSeconds: 30
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: claude
+          image: ghcr.io/rohitpotato/k8s-apps/claude-agent:2.1.311
+          imagePullPolicy: Always
+          # A TTY so `kubectl attach -it` shows Remote Control's status screen.
+          tty: true
+          stdin: true
+          env:
+            - name: AGENT_NAME
+              value: k3s-agent
+            - name: AGENT_SPAWN
+              value: same-dir
+            - name: AGENT_CAPACITY
+              value: "2"
+            - name: GH_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: github-token
+                  key: token
+                  optional: true
+            # Node's heap, kept under the container limit.
+            - name: NODE_OPTIONS
+              value: --max-old-space-size=768
+          resources:
+            requests:
+              cpu: 100m
+              memory: 512Mi
+            limits:
+              memory: 2Gi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: [ALL]
+          volumeMounts:
+            - name: home
+              mountPath: /home/node
+            - name: tmp
+              mountPath: /tmp
+            - name: managed-policy
+              mountPath: /etc/claude-code
+              readOnly: true
+      volumes:
+        - name: home
+          persistentVolumeClaim:
+            claimName: claude-agent-home
+        - name: tmp
+          emptyDir:
+            sizeLimit: 2Gi
+        - name: managed-policy
+          configMap:
+            name: claude-managed-policy

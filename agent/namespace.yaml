@@ -1,0 +1,10 @@
+# `restricted` Pod Security: non-root, no privilege escalation, all
+# capabilities dropped, RuntimeDefault seccomp. The API server rejects any pod
+# in this namespace that asks for more.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: agent
+  labels:
+    pod-security.kubernetes.io/enforce: restricted
+    pod-security.kubernetes.io/warn: restricted

@@ -10,3 +10,7 @@ subjects:
   - kind: ServiceAccount
     name: agent-read-only
     namespace: default
+  # The in-cluster agent (agent/ StatefulSet).
+  - kind: ServiceAccount
+    name: claude-agent
+    namespace: agent

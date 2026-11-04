@@ -1,0 +1,42 @@
+# No inbound traffic. Outbound: DNS, the API server, and the internet, but
+# nothing inside the cluster (pods, services, node ports): postgres, redis,
+# Vault, Grafana and the kubelets are unreachable. Internet egress is open on
+# purpose for now; tighten to an allowlist (proxy or mesh) when needed.
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: claude-agent
+spec:
+  podSelector:
+    matchLabels:
+      app: claude-agent
+  policyTypes: [Ingress, Egress]
+  ingress: []
+  egress:
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+          podSelector:
+            matchLabels:
+              k8s-app: kube-dns
+      ports:
+        - { protocol: UDP, port: 53 }
+        - { protocol: TCP, port: 53 }
+    # kubernetes.default (10.43.0.1:443) is DNATed to the server node, and the
+    # policy sees the post-DNAT address.
+    - to:
+        - ipBlock: { cidr: 45.136.30.195/32 }
+      ports:
+        - { protocol: TCP, port: 6443 }
+    - to:
+        - ipBlock:
+            cidr: 0.0.0.0/0
+            except:
+              - 10.0.0.0/8        # pods 10.42/16, services 10.43/16
+              - 172.16.0.0/12
+              - 192.168.0.0/16
+              - 169.254.0.0/16    # link-local / metadata
+              - 45.136.30.195/32  # server node
+              - 85.235.64.163/32  # worker v2202501249004306983
+              - 194.59.206.106/32 # worker v2202501249056306971

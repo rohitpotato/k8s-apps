@@ -1,0 +1,18 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: agent
+resources:
+  - namespace.yaml
+  - priority-class.yaml
+  - service-account.yaml
+  - external-secret.yaml
+  - pvc.yaml
+  - network-policy.yaml
+  - statefulset.yaml
+# Mounted at /etc/claude-code: managed settings and CLAUDE.md take precedence
+# over anything the agent writes under ~/.claude, and the mount is read-only.
+configMapGenerator:
+  - name: claude-managed-policy
+    files:
+      - managed-settings.json=policy/managed-settings.json
+      - CLAUDE.md=policy/CLAUDE.md

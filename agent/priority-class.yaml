@@ -1,0 +1,10 @@
+# Below every other workload (default priority is 0), and never preempts
+# anything. Under memory pressure the kubelet evicts the agent first.
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: agent-low
+value: -10
+preemptionPolicy: Never
+globalDefault: false
+description: Best-effort agent workloads; evicted before anything else.
