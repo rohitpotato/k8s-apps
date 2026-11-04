@@ -2,3 +2,27 @@ crds:
   enabled: true
 config:
     enableGatewayAPI: true
+
+# Defaults sized from `kubectl top` (2026-11-03); re-check after a week.
+resources:
+  requests:
+    cpu: 10m
+    memory: 64Mi
+  limits:
+    memory: 192Mi
+
+cainjector:
+  resources:
+    requests:
+      cpu: 10m
+      memory: 64Mi
+    limits:
+      memory: 192Mi
+
+webhook:
+  resources:
+    requests:
+      cpu: 10m
+      memory: 32Mi
+    limits:
+      memory: 96Mi

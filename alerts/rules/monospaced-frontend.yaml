@@ -10,11 +10,16 @@ spec:
     - name: monospaced-frontend-alerts
       rules:
         - alert: MonospacedFrontendHighMemoryUsage
-          expr: sum(container_memory_working_set_bytes{namespace="monospaced", pod=~"monospaced-frontend-.*"}) by (pod) > 5 * 1024 * 1024
-          for: 1m
+          # Per container against its own limit. The old fixed 5MiB pod-wide
+          # threshold sat below normal usage (~50Mi), so it fired constantly.
+          expr: |
+            max by (pod, container) (container_memory_working_set_bytes{namespace="monospaced", pod=~"monospaced-frontend-.*", container!=""})
+              / max by (pod, container) (kube_pod_container_resource_limits{namespace="monospaced", pod=~"monospaced-frontend-.*", resource="memory"})
+              > 0.9
+          for: 5m
           labels:
             severity: critical
             team: monospaced
             service: monospaced-frontend
           annotations:
-            summary: "Monospaced Frontend is using high memory"
+            summary: "{{ $labels.pod }}/{{ $labels.container }} is above 90% of its memory limit"

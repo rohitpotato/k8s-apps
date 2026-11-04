@@ -13,8 +13,10 @@ spec:
     groupInterval: 5m
     repeatInterval: 4h
     matchers:
+      # platform: cluster-wide alerts from alerts/rules/cluster.yaml
       - name: team
-        value: monospaced
+        value: monospaced|platform
+        matchType: "=~"
       - name: severity
         value: critical
         matchType: "="

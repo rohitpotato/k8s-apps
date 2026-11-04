@@ -17,3 +17,11 @@ certController:
     limits:
       memory: "256Mi"
       cpu: "200m"
+
+webhook:
+  resources:
+    requests:
+      memory: "48Mi"
+      cpu: "10m"
+    limits:
+      memory: "128Mi"
