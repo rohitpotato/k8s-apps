@@ -4,11 +4,13 @@ metadata:
   name: monospaced-frontend
   namespace: monospaced
 spec:
+  # Serves the site on the canonical host only; http:// and www redirect to
+  # it (redirect-routes.yaml). Argo Rollouts shifts the weights below.
   parentRefs:
     - name: web-gateway
+      sectionName: https-root
   hostnames:
     - rohitpotato.xyz
-    - www.rohitpotato.xyz
   rules:
     - matches:
         - path:

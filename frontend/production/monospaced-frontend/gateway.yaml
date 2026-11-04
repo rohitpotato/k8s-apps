@@ -8,6 +8,14 @@ metadata:
 spec:
   gatewayClassName: traefik
   listeners:
+    # Plain HTTP only exists to redirect (see redirect-routes.yaml). Port 8000
+    # is Traefik's `web` entrypoint, the way 8443 is `websecure`.
+    - name: http
+      protocol: HTTP
+      port: 8000
+      allowedRoutes:
+        namespaces:
+          from: Same
     - name: https-root
       protocol: HTTPS
       port: 8443
