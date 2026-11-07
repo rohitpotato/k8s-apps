@@ -12,6 +12,7 @@ spec:
     - https://grafana.github.io/helm-charts
     - https://charts.bitnami.com/bitnami
     - oci://quay.io/jetstack/charts/cert-manager
+    - oci://registry-1.docker.io/bitnamicharts/redis
     - https://github.com/argoproj/argo-helm.git
   destinations:
     - namespace: monospaced

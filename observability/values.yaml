@@ -29,8 +29,16 @@ grafana:
     enabled: true
     size: 1Gi
   # RWO volume: don't run old and new pods against the same SQLite file.
+  # With one replica, maxSurge 0 stops the old pod before starting the new
+  # one, same as Recreate. Recreate itself can't be used: the live
+  # Deployment keeps the API-defaulted rollingUpdate block (no field owner),
+  # so Argo's server-side diff fails with "rollingUpdate may not be
+  # specified when strategy type is Recreate".
   deploymentStrategy:
-    type: Recreate
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 0
+      maxUnavailable: 1
   # Ensure Grafana runs on worker nodes with anti-affinity
   nodeSelector:
     nodeRole: worker
