@@ -10,7 +10,7 @@ spec:
     - https://prometheus-community.github.io/helm-charts
     - https://charts.external-secrets.io
     - https://grafana.github.io/helm-charts
-    - https://charts.bitnami.com/bitnami
+    - oci://registry-1.docker.io/bitnamicharts/redis
     - oci://quay.io/jetstack/charts/cert-manager
     - https://github.com/argoproj/argo-helm.git
   destinations:

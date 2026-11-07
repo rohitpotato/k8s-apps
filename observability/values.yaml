@@ -29,8 +29,13 @@ grafana:
     enabled: true
     size: 1Gi
   # RWO volume: don't run old and new pods against the same SQLite file.
+  # Same effect as Recreate, but Recreate can't be server-side applied over
+  # the live Deployment's defaulted rollingUpdate block.
   deploymentStrategy:
-    type: Recreate
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 0
+      maxUnavailable: 1
   # Ensure Grafana runs on worker nodes with anti-affinity
   nodeSelector:
     nodeRole: worker
