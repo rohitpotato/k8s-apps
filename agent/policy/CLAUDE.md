@@ -37,3 +37,16 @@ your work isolated from the others.
 
 The pod has a 2Gi memory limit shared by every session. Avoid large builds,
 long-running servers, or loading huge files; ask first if a task needs them.
+
+## Argo CD and Grafana
+
+- `argocd` is preconfigured (`ARGOCD_SERVER`, `ARGOCD_AUTH_TOKEN`) as the
+  read-only account `agent`: `argocd app list`, `app get`, `app diff`,
+  `app history`, `app logs`. Sync, delete and exec are denied by RBAC.
+- Grafana API as a Viewer service account:
+  `curl -s -H "Authorization: Bearer $GRAFANA_TOKEN" "$GRAFANA_URL/api/search"`.
+  Query Prometheus through Grafana's datasource proxy, e.g.
+  `"$GRAFANA_URL/api/datasources/proxy/uid/prometheus/api/v1/query?query=up"`
+  (look the uid up with `/api/datasources` if that one 404s).
+- If a token variable is empty, the Vault entry is missing; say so instead of
+  working around it.

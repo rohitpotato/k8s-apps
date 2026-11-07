@@ -6,3 +6,6 @@ data:
   policy.csv: |
     p, role:super-admin, *, *, *, allow
     g, admin, role:super-admin
+    # Cluster agent: built-in read-only role (apps, projects, logs; no sync,
+    # exec or changes).
+    g, agent, role:readonly

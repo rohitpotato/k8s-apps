@@ -7,3 +7,6 @@ data:
   # Git is polled less often (default 180s); pushes still show up within
   # five minutes, and a manual refresh is instant.
   timeout.reconciliation: 300s
+  # API-token-only account for the cluster agent (no UI login). Read-only via
+  # argocd-rbac-cm. Token: argocd account generate-token --account agent
+  accounts.agent: apiKey
