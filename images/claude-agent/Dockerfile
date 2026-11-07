@@ -8,7 +8,7 @@ ARG CLAUDE_CODE_VERSION=2.1.311
 ARG KUBECTL_VERSION=v1.34.4
 ARG KUBECONFORM_VERSION=v0.6.7
 # Match argocd/install/kustomization.yaml.
-ARG ARGOCD_VERSION=v3.3.1
+ARG ARGOCD_VERSION=v3.5.7
 
 RUN apt-get update \
  && apt-get install -y --no-install-recommends \

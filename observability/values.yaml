@@ -17,6 +17,20 @@ affinity:
 
 grafana:
   enabled: true
+  # From eso-secrets/grafana-admin.yaml. The chart's own Secret now holds a
+  # random password that changes on every render.
+  admin:
+    existingSecret: grafana-admin
+    userKey: admin-user
+    passwordKey: admin-password
+  # Grafana's database (users, service accounts and their tokens, anything
+  # made in the UI) was on an emptyDir and lost on every restart.
+  persistence:
+    enabled: true
+    size: 1Gi
+  # RWO volume: don't run old and new pods against the same SQLite file.
+  deploymentStrategy:
+    type: Recreate
   # Ensure Grafana runs on worker nodes with anti-affinity
   nodeSelector:
     nodeRole: worker
