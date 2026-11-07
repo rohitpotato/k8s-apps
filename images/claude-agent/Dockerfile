@@ -1,5 +1,5 @@
 # Claude Code agent for the k3s cluster: the CLI plus the tools it drives
-# (git, gh, kubectl, kubeconform). The model runs at Anthropic; this image only
+# (git, gh, kubectl, kubeconform, argocd). The model runs at Anthropic; this image only
 # needs outbound HTTPS. Bump CLAUDE_CODE_VERSION to upgrade: the auto-updater is
 # off because the root filesystem is read-only in the pod.
 FROM node:22-bookworm-slim
@@ -7,6 +7,8 @@ FROM node:22-bookworm-slim
 ARG CLAUDE_CODE_VERSION=2.1.311
 ARG KUBECTL_VERSION=v1.34.4
 ARG KUBECONFORM_VERSION=v0.6.7
+# Match argocd/install/kustomization.yaml.
+ARG ARGOCD_VERSION=v3.3.1
 
 RUN apt-get update \
  && apt-get install -y --no-install-recommends \
@@ -24,7 +26,10 @@ RUN curl -fsSLo /usr/local/bin/kubectl \
       "https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl" \
  && chmod +x /usr/local/bin/kubectl \
  && curl -fsSL "https://github.com/yannh/kubeconform/releases/download/${KUBECONFORM_VERSION}/kubeconform-linux-amd64.tar.gz" \
-      | tar -xz -C /usr/local/bin kubeconform
+      | tar -xz -C /usr/local/bin kubeconform \
+ && curl -fsSLo /usr/local/bin/argocd \
+      "https://github.com/argoproj/argo-cd/releases/download/${ARGOCD_VERSION}/argocd-linux-amd64" \
+ && chmod +x /usr/local/bin/argocd
 
 RUN npm install -g "@anthropic-ai/claude-code@${CLAUDE_CODE_VERSION}" \
  && npm cache clean --force

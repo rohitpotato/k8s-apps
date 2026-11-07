@@ -50,6 +50,28 @@ spec:
                   name: github-token
                   key: token
                   optional: true
+            # Argo CD API, read-only account `agent`. argocd-server runs with
+            # server.insecure, so plain HTTP inside the cluster.
+            - name: ARGOCD_SERVER
+              value: argocd-server.argocd.svc:80
+            - name: ARGOCD_OPTS
+              value: --plaintext --grpc-web
+            - name: ARGOCD_AUTH_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: argocd-token
+                  key: token
+                  optional: true
+            # Grafana HTTP API as a Viewer service account:
+            #   curl -H "Authorization: Bearer $GRAFANA_TOKEN" "$GRAFANA_URL/api/..."
+            - name: GRAFANA_URL
+              value: http://kube-prometheus-stack-grafana.monitoring.svc
+            - name: GRAFANA_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: grafana-token
+                  key: token
+                  optional: true
             # Node's heap, kept under the container limit.
             - name: NODE_OPTIONS
               value: --max-old-space-size=768

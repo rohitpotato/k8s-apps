@@ -43,7 +43,17 @@
       "Bash(gh run list:*)",
       "Bash(gh repo clone:*)",
       "Bash(gh issue view:*)",
-      "Bash(gh issue list:*)"
+      "Bash(gh issue list:*)",
+      "Bash(argocd app list:*)",
+      "Bash(argocd app get:*)",
+      "Bash(argocd app diff:*)",
+      "Bash(argocd app history:*)",
+      "Bash(argocd app manifests:*)",
+      "Bash(argocd app resources:*)",
+      "Bash(argocd app logs:*)",
+      "Bash(argocd proj list:*)",
+      "Bash(argocd proj get:*)",
+      "Bash(argocd version:*)"
     ]
   },
   "env": {
