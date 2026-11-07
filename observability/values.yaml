@@ -109,6 +109,10 @@ grafana:
     # second watcher running; datasource changes need a pod restart.
     datasources:
       initDatasources: true
+      # Grafana chart 14.x takes the init container's METHOD from
+      # watchMethod (default WATCH), so it never exits and the pod sits in
+      # Init. LIST does one pass and exits, as the old chart hard-coded.
+      watchMethod: LIST
     resources:
       requests:
         memory: "96Mi"
