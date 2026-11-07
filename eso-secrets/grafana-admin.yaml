@@ -1,0 +1,27 @@
+# Grafana admin login. Without an existing secret the Grafana chart (79.x+ of
+# kube-prometheus-stack) generates a random password on every render, which
+# under Argo CD means a new Secret, and a Grafana restart, on every sync.
+# Create the Vault entry before this syncs:
+#   vault kv put kv/monitoring/grafana admin-user=admin admin-password=...
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: grafana-admin
+  namespace: monitoring
+spec:
+  refreshInterval: 1h
+  secretStoreRef:
+    name: vault-backend
+    kind: ClusterSecretStore
+  target:
+    name: grafana-admin
+    creationPolicy: Owner
+  data:
+    - secretKey: admin-user
+      remoteRef:
+        key: monitoring/grafana
+        property: admin-user
+    - secretKey: admin-password
+      remoteRef:
+        key: monitoring/grafana
+        property: admin-password
