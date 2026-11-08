@@ -1,0 +1,12 @@
+#!/bin/sh
+# Mounted at /usr/local/sbin, ahead of /usr/local/bin in PATH, so it shadows
+# the real CLI. argocd takes a token only from ARGOCD_AUTH_TOKEN/--auth-token
+# or from a config file with mode 0400/0600, and a Secret mounted for a
+# non-root user is 0440. Reading the mounted token on every run means a
+# rotated token works without a pod restart.
+token_file=/var/run/secrets/agent/argocd/token
+if [ -r "$token_file" ]; then
+  ARGOCD_AUTH_TOKEN=$(cat "$token_file")
+  export ARGOCD_AUTH_TOKEN
+fi
+exec /usr/local/bin/argocd "$@"

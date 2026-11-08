@@ -52,12 +52,13 @@ spec:
                   optional: true
             # Argo CD API, read-only account `agent`. argocd-server runs with
             # server.insecure, so plain HTTP inside the cluster. The token is
-            # in the mounted config file, not an env var, so rotations reach
-            # running sessions without a restart.
+            # read from the mounted file on every run by the argocd wrapper
+            # (agent/bin/argocd), so rotations reach running sessions without
+            # a restart.
             - name: ARGOCD_SERVER
               value: argocd-server.argocd.svc:80
             - name: ARGOCD_OPTS
-              value: --plaintext --grpc-web --config /var/run/secrets/agent/argocd/config
+              value: --plaintext --grpc-web
             # Grafana HTTP API as a Viewer service account, token read per call:
             #   curl -H "Authorization: Bearer $(cat /var/run/secrets/agent/grafana/token)" "$GRAFANA_URL/api/..."
             - name: GRAFANA_URL
@@ -91,6 +92,10 @@ spec:
             - name: grafana-token
               mountPath: /var/run/secrets/agent/grafana
               readOnly: true
+            # Empty in the image and first in PATH: holds the argocd wrapper.
+            - name: agent-bin
+              mountPath: /usr/local/sbin
+              readOnly: true
       volumes:
         - name: home
           persistentVolumeClaim:
@@ -112,3 +117,7 @@ spec:
             secretName: grafana-token
             optional: true
             defaultMode: 0440
+        - name: agent-bin
+          configMap:
+            name: agent-bin
+            defaultMode: 0555

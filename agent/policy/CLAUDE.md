@@ -40,10 +40,12 @@ long-running servers, or loading huge files; ask first if a task needs them.
 
 ## Argo CD and Grafana
 
-- `argocd` is preconfigured (`ARGOCD_SERVER`, and `ARGOCD_OPTS` pointing at
-  the mounted config `/var/run/secrets/agent/argocd/config`) as the
+- `argocd` is preconfigured (`ARGOCD_SERVER`, `ARGOCD_OPTS`) as the
   read-only account `agent`: `argocd app list`, `app get`, `app diff`,
   `app history`, `app logs`. Sync, delete and exec are denied by RBAC.
+  `argocd` resolves to a wrapper in `/usr/local/sbin` that loads the token
+  from `/var/run/secrets/agent/argocd/token` on every run; call it as plain
+  `argocd …`, without setting a token yourself.
 - Grafana API as a Viewer service account, reading the token file on each
   call so a rotated token is picked up:
   `curl -s -H "Authorization: Bearer $(cat /var/run/secrets/agent/grafana/token)" "$GRAFANA_URL/api/search"`.
