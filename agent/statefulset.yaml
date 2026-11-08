@@ -51,27 +51,17 @@ spec:
                   key: token
                   optional: true
             # Argo CD API, read-only account `agent`. argocd-server runs with
-            # server.insecure, so plain HTTP inside the cluster.
+            # server.insecure, so plain HTTP inside the cluster. The token is
+            # in the mounted config file, not an env var, so rotations reach
+            # running sessions without a restart.
             - name: ARGOCD_SERVER
               value: argocd-server.argocd.svc:80
             - name: ARGOCD_OPTS
-              value: --plaintext --grpc-web
-            - name: ARGOCD_AUTH_TOKEN
-              valueFrom:
-                secretKeyRef:
-                  name: argocd-token
-                  key: token
-                  optional: true
-            # Grafana HTTP API as a Viewer service account:
-            #   curl -H "Authorization: Bearer $GRAFANA_TOKEN" "$GRAFANA_URL/api/..."
+              value: --plaintext --grpc-web --config /var/run/secrets/agent/argocd/config
+            # Grafana HTTP API as a Viewer service account, token read per call:
+            #   curl -H "Authorization: Bearer $(cat /var/run/secrets/agent/grafana/token)" "$GRAFANA_URL/api/..."
             - name: GRAFANA_URL
               value: http://kube-prometheus-stack-grafana.monitoring.svc
-            - name: GRAFANA_TOKEN
-              valueFrom:
-                secretKeyRef:
-                  name: grafana-token
-                  key: token
-                  optional: true
             # Node's heap, kept under the container limit.
             - name: NODE_OPTIONS
               value: --max-old-space-size=768
@@ -94,6 +84,13 @@ spec:
             - name: managed-policy
               mountPath: /etc/claude-code
               readOnly: true
+            # No subPath: subPath mounts never pick up Secret updates.
+            - name: argocd-token
+              mountPath: /var/run/secrets/agent/argocd
+              readOnly: true
+            - name: grafana-token
+              mountPath: /var/run/secrets/agent/grafana
+              readOnly: true
       volumes:
         - name: home
           persistentVolumeClaim:
@@ -104,3 +101,14 @@ spec:
         - name: managed-policy
           configMap:
             name: claude-managed-policy
+        # Owned root:1000 (fsGroup), so group-readable for uid 1000.
+        - name: argocd-token
+          secret:
+            secretName: argocd-token
+            optional: true
+            defaultMode: 0440
+        - name: grafana-token
+          secret:
+            secretName: grafana-token
+            optional: true
+            defaultMode: 0440
