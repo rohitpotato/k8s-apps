@@ -16,3 +16,7 @@ configMapGenerator:
     files:
       - managed-settings.json=policy/managed-settings.json
       - CLAUDE.md=policy/CLAUDE.md
+  # Mounted at /usr/local/sbin (ahead of /usr/local/bin in PATH).
+  - name: agent-bin
+    files:
+      - argocd=bin/argocd
