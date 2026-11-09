@@ -2,6 +2,9 @@ controller:
     # Single controller is plenty for two Rollouts; the chart default of 2
     # just runs a standby leader-election replica.
     replicas: 1
+    # Off the control-plane node (no taint, little memory left after k3s).
+    nodeSelector:
+      nodeRole: worker
     resources:
       requests:
         cpu: 50m

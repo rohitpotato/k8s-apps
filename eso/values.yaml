@@ -1,5 +1,9 @@
 installCRDs: true
 
+# Off the control-plane node (no taint, little memory left after k3s).
+nodeSelector:
+  nodeRole: worker
+
 # Add resource limits for ESO components
 resources:
   requests:
@@ -10,6 +14,8 @@ resources:
     cpu: "200m"
 
 certController:
+  nodeSelector:
+    nodeRole: worker
   resources:
     requests:
       memory: "128Mi"
@@ -19,6 +25,8 @@ certController:
       cpu: "200m"
 
 webhook:
+  nodeSelector:
+    nodeRole: worker
   resources:
     requests:
       memory: "48Mi"

@@ -233,9 +233,18 @@ alertmanager:
         memory: "256Mi"
         cpu: "200m"
 
+# The top-level nodeSelector above isn't a kube-prometheus-stack value; each
+# component needs its own to stay off the control-plane node.
+#
 # Defaults sized from `kubectl top` (2026-11-03); re-check against p95 after
 # a week. CPU request only, memory limit only, like the Argo CD patches.
 prometheusOperator:
+  nodeSelector:
+    nodeRole: worker
+  admissionWebhooks:
+    patch:
+      nodeSelector:
+        nodeRole: worker
   resources:
     requests:
       cpu: 10m
@@ -244,6 +253,8 @@ prometheusOperator:
       memory: 128Mi
 
 kube-state-metrics:
+  nodeSelector:
+    nodeRole: worker
   resources:
     requests:
       cpu: 10m
