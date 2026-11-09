@@ -16,6 +16,15 @@ patches:
   - path: patches/argocd-rbac-cm.yaml
   - path: patches/application-controller-resources.yaml
   - path: patches/component-resources.yaml
+  # Keep Argo CD off the control-plane node, which has no taint and little
+  # memory left after k3s itself; pinned like the other workloads here.
+  - target:
+      kind: Deployment|StatefulSet
+      name: argocd-.*
+    patch: |-
+      - op: add
+        path: /spec/template/spec/nodeSelector/nodeRole
+        value: worker
   # No ApplicationSets, SSO (Dex) or notifications in use; scale them to
   # zero rather than deleting so turning one back on is a one-line change.
   - target:

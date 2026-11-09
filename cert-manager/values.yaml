@@ -3,6 +3,10 @@ crds:
 config:
     enableGatewayAPI: true
 
+# Off the control-plane node (no taint, little memory left after k3s).
+nodeSelector:
+  nodeRole: worker
+
 # Defaults sized from `kubectl top` (2026-11-03); re-check after a week.
 resources:
   requests:
@@ -12,6 +16,8 @@ resources:
     memory: 192Mi
 
 cainjector:
+  nodeSelector:
+    nodeRole: worker
   resources:
     requests:
       cpu: 10m
@@ -20,9 +26,15 @@ cainjector:
       memory: 192Mi
 
 webhook:
+  nodeSelector:
+    nodeRole: worker
   resources:
     requests:
       cpu: 10m
       memory: 32Mi
     limits:
       memory: 96Mi
+
+startupapicheck:
+  nodeSelector:
+    nodeRole: worker
