@@ -35,7 +35,7 @@ spec:
               topologyKey: kubernetes.io/hostname
       containers:
         - name: monospaced-frontend
-          image: ghcr.io/rohitpotato/monospaced-stack/frontend:main-f0f9cb9
+          image: ghcr.io/rohitpotato/monospaced-stack/frontend:main-fb69321
           imagePullPolicy: Always
           env:
             # nginx puts this in a Server-Timing header for the site's delivery receipt
