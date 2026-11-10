@@ -2,7 +2,7 @@ apiVersion: gateway.networking.k8s.io/v1
 kind: Gateway
 metadata:
   name: web-gateway
-  namespace: monospaced
+  namespace: default
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-production
 spec:
@@ -15,7 +15,10 @@ spec:
       port: 8000
       allowedRoutes:
         namespaces:
-          from: Same
+          from: Selector
+          selector:
+            matchLabels:
+              kubernetes.io/metadata.name: monospaced
     - name: https-root
       protocol: HTTPS
       port: 8443
@@ -27,7 +30,10 @@ spec:
             name: rohitpotato-xyz-tls
       allowedRoutes:
         namespaces:
-          from: Same
+          from: Selector
+          selector:
+            matchLabels:
+              kubernetes.io/metadata.name: monospaced
     - name: https-www
       protocol: HTTPS
       port: 8443
@@ -39,13 +45,10 @@ spec:
             name: rohitpotato-xyz-tls
       allowedRoutes:
         namespaces:
-          from: Same
-    # analytics.rohitpotato.xyz (GoatCounter). Its routes, including the
-    # http -> https redirect, live in goatcounter/ in the analytics namespace,
-    # so both listeners accept routes from there only. On port 8000 the
-    # hostname makes this listener win over the catch-all `http` one.
-    # cert-manager issues the certificate into this namespace from the
-    # Gateway annotation, like the others.
+          from: Selector
+          selector:
+            matchLabels:
+              kubernetes.io/metadata.name: monospaced
     - name: http-analytics
       protocol: HTTP
       port: 8000

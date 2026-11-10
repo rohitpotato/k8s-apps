@@ -9,6 +9,7 @@ metadata:
 spec:
   parentRefs:
     - name: web-gateway
+      namespace: default
       sectionName: http
   hostnames:
     - rohitpotato.xyz
@@ -28,8 +29,10 @@ metadata:
 spec:
   parentRefs:
     - name: web-gateway
+      namespace: default
       sectionName: http
     - name: web-gateway
+      namespace: default
       sectionName: https-www
   hostnames:
     - www.rohitpotato.xyz

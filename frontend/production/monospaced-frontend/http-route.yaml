@@ -8,6 +8,7 @@ spec:
   # it (redirect-routes.yaml). Argo Rollouts shifts the weights below.
   parentRefs:
     - name: web-gateway
+      namespace: default
       sectionName: https-root
   hostnames:
     - rohitpotato.xyz
