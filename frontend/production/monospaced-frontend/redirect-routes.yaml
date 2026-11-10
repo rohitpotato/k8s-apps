@@ -12,6 +12,9 @@ spec:
       sectionName: http
   hostnames:
     - rohitpotato.xyz
+    # The http listener only takes routes from this namespace, so the
+    # analytics redirect lives here rather than next to GoatCounter.
+    - analytics.rohitpotato.xyz
   rules:
     - filters:
         - type: RequestRedirect
