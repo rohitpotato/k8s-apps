@@ -5,7 +5,7 @@ metadata:
   namespace: analytics
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-production
-    traefik.ingress.kubernetes.io/router.middlewares: default-redirect-https@kubernetescrd
+    traefik.ingress.kubernetes.io/router.middlewares: default-redirect-https@kubernetescrd,analytics-noindex@kubernetescrd
 spec:
   ingressClassName: traefik
   rules:
