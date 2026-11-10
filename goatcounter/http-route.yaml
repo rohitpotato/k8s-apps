@@ -1,10 +1,3 @@
-# Serves analytics.rohitpotato.xyz through the shared web-gateway
-# (cluster/gateway.yaml, default namespace). The second route below redirects http:// to https.
-#
-# X-Robots-Tag keeps GoatCounter's own help/code pages out of search results:
-# Google had indexed 27 of them under the rohitpotato.xyz domain property,
-# more than the blog itself. A header rather than a robots.txt Disallow, so
-# crawlers can still fetch the pages and see the noindex. count.js is unaffected.
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
@@ -32,7 +25,6 @@ spec:
         - name: goatcounter
           port: 8080
 ---
-# http://analytics.rohitpotato.xyz -> https, on the gateway's http-analytics listener.
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
