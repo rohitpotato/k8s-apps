@@ -40,9 +40,22 @@ spec:
       allowedRoutes:
         namespaces:
           from: Same
-    # GoatCounter's route lives in the analytics namespace, so this listener
-    # accepts routes from there only. cert-manager issues the certificate into
-    # this namespace from the Gateway annotation, like the others.
+    # analytics.rohitpotato.xyz (GoatCounter). Its routes, including the
+    # http -> https redirect, live in goatcounter/ in the analytics namespace,
+    # so both listeners accept routes from there only. On port 8000 the
+    # hostname makes this listener win over the catch-all `http` one.
+    # cert-manager issues the certificate into this namespace from the
+    # Gateway annotation, like the others.
+    - name: http-analytics
+      protocol: HTTP
+      port: 8000
+      hostname: analytics.rohitpotato.xyz
+      allowedRoutes:
+        namespaces:
+          from: Selector
+          selector:
+            matchLabels:
+              kubernetes.io/metadata.name: analytics
     - name: https-analytics
       protocol: HTTPS
       port: 8443
