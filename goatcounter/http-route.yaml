@@ -15,6 +15,10 @@ spec:
     - name: web-gateway
       namespace: monospaced
       sectionName: https-analytics
+    # Migration to the shared gateway in default (cluster/gateway.yaml).
+    - name: web-gateway
+      namespace: default
+      sectionName: https-analytics
   hostnames:
     - analytics.rohitpotato.xyz
   rules:
@@ -42,6 +46,10 @@ spec:
   parentRefs:
     - name: web-gateway
       namespace: monospaced
+      sectionName: http-analytics
+    # Migration to the shared gateway in default (cluster/gateway.yaml).
+    - name: web-gateway
+      namespace: default
       sectionName: http-analytics
   hostnames:
     - analytics.rohitpotato.xyz

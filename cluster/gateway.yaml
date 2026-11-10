@@ -1,0 +1,98 @@
+# The cluster's shared Gateway. Synced by the traefik-config app (wave 0,
+# default namespace) so it exists before any app that attaches routes to it.
+#
+# Each hostname gets its own listener pair, and each listener only accepts
+# routes from the namespace that owns that host. Apps keep their HTTPRoutes
+# (including their own http -> https redirects) in their own folders and
+# attach with:
+#
+#   parentRefs:
+#     - name: web-gateway
+#       namespace: default
+#       sectionName: <listener>
+#
+# Ports are Traefik entrypoints, not public ports: 8000 is `web` (public 80)
+# and 8443 is `websecure` (public 443). The Traefik Service maps them.
+#
+# cert-manager issues one certificate per HTTPS listener into this namespace
+# from the annotation below.
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: web-gateway
+  namespace: default
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-production
+spec:
+  gatewayClassName: traefik
+  listeners:
+    # --- rohitpotato.xyz and www (monospaced namespace) ---
+    # Catch-all plain HTTP; only redirects attach here
+    # (frontend/production/monospaced-frontend/redirect-routes.yaml).
+    - name: http
+      protocol: HTTP
+      port: 8000
+      allowedRoutes:
+        namespaces:
+          from: Selector
+          selector:
+            matchLabels:
+              kubernetes.io/metadata.name: monospaced
+    - name: https-root
+      protocol: HTTPS
+      port: 8443
+      hostname: rohitpotato.xyz
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - kind: Secret
+            name: rohitpotato-xyz-tls
+      allowedRoutes:
+        namespaces:
+          from: Selector
+          selector:
+            matchLabels:
+              kubernetes.io/metadata.name: monospaced
+    - name: https-www
+      protocol: HTTPS
+      port: 8443
+      hostname: www.rohitpotato.xyz
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - kind: Secret
+            name: rohitpotato-xyz-tls
+      allowedRoutes:
+        namespaces:
+          from: Selector
+          selector:
+            matchLabels:
+              kubernetes.io/metadata.name: monospaced
+
+    # --- analytics.rohitpotato.xyz (analytics namespace, GoatCounter) ---
+    # The hostname makes http-analytics win over the catch-all `http` above.
+    - name: http-analytics
+      protocol: HTTP
+      port: 8000
+      hostname: analytics.rohitpotato.xyz
+      allowedRoutes:
+        namespaces:
+          from: Selector
+          selector:
+            matchLabels:
+              kubernetes.io/metadata.name: analytics
+    - name: https-analytics
+      protocol: HTTPS
+      port: 8443
+      hostname: analytics.rohitpotato.xyz
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - kind: Secret
+            name: analytics-rohitpotato-xyz-tls
+      allowedRoutes:
+        namespaces:
+          from: Selector
+          selector:
+            matchLabels:
+              kubernetes.io/metadata.name: analytics

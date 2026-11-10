@@ -10,6 +10,10 @@ spec:
   parentRefs:
     - name: web-gateway
       sectionName: http
+    # Migration to the shared gateway in default (cluster/gateway.yaml).
+    - name: web-gateway
+      namespace: default
+      sectionName: http
   hostnames:
     - rohitpotato.xyz
   rules:
@@ -29,7 +33,15 @@ spec:
   parentRefs:
     - name: web-gateway
       sectionName: http
+    # Migration to the shared gateway in default (cluster/gateway.yaml).
     - name: web-gateway
+      namespace: default
+      sectionName: http
+    - name: web-gateway
+      sectionName: https-www
+    # Migration to the shared gateway in default (cluster/gateway.yaml).
+    - name: web-gateway
+      namespace: default
       sectionName: https-www
   hostnames:
     - www.rohitpotato.xyz
