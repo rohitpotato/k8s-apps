@@ -1,5 +1,5 @@
-# Serves analytics.rohitpotato.xyz through the shared web-gateway (monospaced
-# namespace). The second route below redirects http:// to https.
+# Serves analytics.rohitpotato.xyz through the shared web-gateway
+# (cluster/gateway.yaml, default namespace). The second route below redirects http:// to https.
 #
 # X-Robots-Tag keeps GoatCounter's own help/code pages out of search results:
 # Google had indexed 27 of them under the rohitpotato.xyz domain property,
@@ -12,10 +12,6 @@ metadata:
   namespace: analytics
 spec:
   parentRefs:
-    - name: web-gateway
-      namespace: monospaced
-      sectionName: https-analytics
-    # Migration to the shared gateway in default (cluster/gateway.yaml).
     - name: web-gateway
       namespace: default
       sectionName: https-analytics
@@ -44,10 +40,6 @@ metadata:
   namespace: analytics
 spec:
   parentRefs:
-    - name: web-gateway
-      namespace: monospaced
-      sectionName: http-analytics
-    # Migration to the shared gateway in default (cluster/gateway.yaml).
     - name: web-gateway
       namespace: default
       sectionName: http-analytics

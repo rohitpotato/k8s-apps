@@ -8,9 +8,6 @@ spec:
   # it (redirect-routes.yaml). Argo Rollouts shifts the weights below.
   parentRefs:
     - name: web-gateway
-      sectionName: https-root
-    # Migration to the shared gateway in default (cluster/gateway.yaml).
-    - name: web-gateway
       namespace: default
       sectionName: https-root
   hostnames:
