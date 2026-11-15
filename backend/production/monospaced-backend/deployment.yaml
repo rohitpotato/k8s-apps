@@ -37,6 +37,9 @@ spec:
           envFrom:
             - configMapRef:
                 name: monospaced-backend-config
+            - secretRef:
+                name: monospaced-backend-resend
+                optional: true
           ports:
             - containerPort: 5001
           readinessProbe:
